@@ -4,6 +4,34 @@
 
 constexpr unsigned int MAX_NUMBER = 100;
 
+static int max_number = MAX_NUMBER;
+
+int process_args(const int argc, char** argv)
+{
+    std::string arg_value;
+
+    if (argc < 2) {
+        // We have no arguments
+        return 0;
+    }
+
+    for (int i = 1; i <= (argc-1); i++) {
+        arg_value = argv[i];
+		if (arg_value == "-max") {
+			// We've detected the '-max' argument. And we expect that after this argument there is a value:
+            if (argc < 3) {
+				std::cout << "Wrong usage! The argument '-max' requires some value!" << std::endl;
+				return -1;
+			}
+			// We need to parse the string to the int value
+            i++;
+            max_number = std::stoi(argv[i]);
+		}
+    }
+
+    return 0;
+}
+
 unsigned int get_random_number(const unsigned int max_number = MAX_NUMBER)
 {
     std::srand(std::time(nullptr));
@@ -73,11 +101,12 @@ int print_highscore(const std::string high_scores_filename = "high_scores.txt")
     return 0;
 }
 
-int main()
+int main(int argc, char** argv)
 {
-    const int max_number = MAX_NUMBER;
     unsigned int guess;
     int attempts = 0;
+
+    process_args(argc, argv);
 
     const unsigned int guessed_number = get_random_number(max_number);
 
