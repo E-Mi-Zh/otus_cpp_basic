@@ -5,6 +5,7 @@
 constexpr unsigned int MAX_NUMBER = 100;
 
 static int max_number = MAX_NUMBER;
+static bool scores_only = false;
 
 int process_args(const int argc, char** argv)
 {
@@ -17,6 +18,11 @@ int process_args(const int argc, char** argv)
 
     for (int i = 1; i <= (argc-1); i++) {
         arg_value = argv[i];
+		if (arg_value == "-table") {
+            scores_only = true;
+            // We don't need parse other args because with `-table` we will not play actually
+            return 0;
+		}
 		if (arg_value == "-max") {
 			// We've detected the '-max' argument. And we expect that after this argument there is a value:
             if (argc < 3) {
@@ -107,6 +113,11 @@ int main(int argc, char** argv)
     int attempts = 0;
 
     process_args(argc, argv);
+
+    if (scores_only) {
+        print_highscore();
+        return 0;
+    }
 
     const unsigned int guessed_number = get_random_number(max_number);
 
