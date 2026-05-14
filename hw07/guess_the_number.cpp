@@ -3,6 +3,7 @@
 #include <fstream> //for file ops
 
 constexpr unsigned int MAX_NUMBER = 100;
+constexpr unsigned int MAX_USERS = 100;
 
 static int max_number = MAX_NUMBER;
 static bool scores_only = false;
@@ -107,6 +108,95 @@ int print_highscore(const std::string high_scores_filename = "high_scores.txt")
     return 0;
 }
 
+/*
+*  Дополнительное задание 3: выводить только минимальное значение числа попыток
+*  для каждого пользователя.
+*
+*  Очевидно, что могут быть разные решения этой задачи. Во-первых просится некая
+*  структура данных в динамической памяти (мы её ещё не проходили), т.к. число
+*  пользователей заранее неизвестно.
+*  Во-вторых это может быть стандартный контейнер (мы их ещё не проходили) - вектор,
+*  список или хеш-таблица.
+*  В-третьих, предполагая, что мы находимся в Линуксе, можно было бы воспользоваться
+*  внешними утилитами вроде sort и uniq.
+*
+*  Однако т.к. на данный момент мы прошли только базовые типы C++ попробуем обойтись
+*  ими.
+*/
+
+/* В Си есть qsort, можно было бы прочитать весь файл в массив и
+*  отсортировать его. В C++ не знаю аналога, писать свой лень, поэтому
+*  будем искать перебором "в лоб".
+*/
+int get_username_index(std::string users[], std::string username, unsigned int& total_users)
+{
+    unsigned int i;
+    for (i = 0; ((i < MAX_USERS) && (i < total_users)); i++) {
+        if (username == users[i]) {
+            return i;
+        }
+    }
+
+    // nothing found
+    total_users = i;
+    return -1;
+}
+
+int print_only_min_highscore(const std::string high_scores_filename = "high_scores.txt")
+{
+    unsigned int highscore = 0;
+    std::string username;
+    std::string users[MAX_USERS];
+    unsigned int attempts[MAX_USERS];
+    int user_index = 0;
+    unsigned int total_users = 0;
+
+    // Read the high score file and print all results
+    std::ifstream scores_in_file{high_scores_filename};
+    if (!scores_in_file.is_open()) {
+        std::cout << "Failed to open file for read: " << high_scores_filename << "!" << std::endl;
+        return -1;
+    }
+
+    std::cout << std::endl;
+    std::cout << "High scores table:" << std::endl;
+
+    while (true) {
+        // Read the username first
+        scores_in_file >> username;
+        // Read the high score next
+        scores_in_file >> highscore;
+        // Ignore the end of line symbol
+        scores_in_file.ignore();
+
+        if (scores_in_file.fail()) {
+            break;
+        }
+
+        user_index = get_username_index(users, username, total_users);
+        if (user_index < 0) {
+            // add new user
+            users[total_users] = username;
+            attempts[total_users] = highscore;
+            total_users++;
+            continue;
+        }
+
+        // check and modify highscore if needed
+        if (highscore < attempts[user_index]) {
+            attempts[user_index] = highscore;
+        }
+    }
+
+    for (unsigned int i = 0; i < total_users; i++) {
+        // Print the information to the screen
+        std::cout << users[i] << ' ' << attempts[i] << std::endl;
+    }
+
+    return 0;
+}
+
+
 int main(int argc, char** argv)
 {
     unsigned int guess;
@@ -115,7 +205,8 @@ int main(int argc, char** argv)
     process_args(argc, argv);
 
     if (scores_only) {
-        print_highscore();
+        // print_highscore();
+        print_only_min_highscore();
         return 0;
     }
 
@@ -142,7 +233,8 @@ int main(int argc, char** argv)
 	};
 
     save_highscore(username, attempts);
-    print_highscore();
+    // print_highscore();
+    print_only_min_highscore();
 
     return 0;
 }
