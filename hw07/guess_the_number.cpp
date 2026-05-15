@@ -11,6 +11,8 @@ static bool scores_only = false;
 int process_args(const int argc, char** argv)
 {
     std::string arg_value;
+    bool max_number_set = false;
+    unsigned int level = 0;
 
     if (argc < 2) {
         // We have no arguments
@@ -25,14 +27,49 @@ int process_args(const int argc, char** argv)
             return 0;
 		}
 		if (arg_value == "-max") {
+            if (max_number_set) {
+                std::cout << "Wrong usage! The argument '-max' conflicts with argument '-level'!" << std::endl;
+				return -1;
+            }
 			// We've detected the '-max' argument. And we expect that after this argument there is a value:
             if (argc < 3) {
 				std::cout << "Wrong usage! The argument '-max' requires some value!" << std::endl;
 				return -1;
 			}
+            max_number_set = true;
 			// We need to parse the string to the int value
             i++;
             max_number = std::stoi(argv[i]);
+		}
+		if (arg_value == "-level") {
+            if (max_number_set) {
+                std::cout << "Wrong usage! The argument '-level' conflicts with argument '-max'!" << std::endl;
+				return -1;
+            }
+			// We've detected the '-level' argument. And we expect that after this argument there is a value:
+            if (argc < 3) {
+				std::cout << "Wrong usage! The argument '-level' requires some value!" << std::endl;
+				return -1;
+			}
+            max_number_set = true;
+			// We need to parse the string to the int value
+            i++;
+            level = std::stoi(argv[i]);
+            switch (level) {
+                case 1:
+                    max_number = 10;
+                    break;
+                case 2:
+                    max_number = 50;
+                    break;
+                case 3:
+                    max_number = 100;
+                    break;
+                default:
+                    std::cout << "Wrong usage! The argument '-level' value from 1 to 3! Setting to 1" << std::endl;
+                    max_number = 10;
+                    break;
+            }
 		}
     }
 
@@ -277,7 +314,10 @@ int main(int argc, char** argv)
     unsigned int guess;
     unsigned int attempts = 0;
 
-    process_args(argc, argv);
+    if (process_args(argc, argv) < 0) {
+        std::cout << "Exiting..." << std::endl;
+        return -1;
+    }
 
     if (scores_only) {
         // print_highscore();
