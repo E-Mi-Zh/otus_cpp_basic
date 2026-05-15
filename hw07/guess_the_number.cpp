@@ -196,11 +196,86 @@ int print_only_min_highscore(const std::string high_scores_filename = "high_scor
     return 0;
 }
 
+int load_all_scores(std::string users[], unsigned int attempts[], const std::string high_scores_filename = "high_scores.txt")
+
+{
+    unsigned int i = 0;
+
+    std::ifstream scores_in_file{high_scores_filename, std::ios_base::in};
+    if (!scores_in_file.is_open()) {
+        std::cout << "Failed to open file for read: " << high_scores_filename << "!" << std::endl;
+        return -1;
+    }
+
+    while (true) {
+        scores_in_file >> users[i];
+        scores_in_file >> attempts[i];
+        scores_in_file.ignore();
+
+        if (scores_in_file.fail()) {
+            break;
+        }
+
+        i++;
+
+        if (i == MAX_USERS) {
+            std::cout << "load_all_scores: Max users number reached, exiting" << std::endl;
+            break;
+        }
+    }
+
+    return i;
+}
+
+int save_only_min_highscore(const std::string username, const unsigned int attempt, const std::string high_scores_filename = "high_scores.txt")
+{
+    std::string users[MAX_USERS];
+    unsigned int attempts[MAX_USERS];
+    int total_users = 0;
+    bool found_user = false;
+
+    total_users = load_all_scores(users, attempts, high_scores_filename);
+    std::cout << "total_users=" << total_users << std::endl;
+    std::cout << "username=" << username << "\tattempt=" << attempt << std::endl;
+    if (total_users < 0) {
+        std::cout << "Error loading highscores!" << std::endl;
+    }
+
+    std::ofstream scores_out_file{high_scores_filename, std::ios_base::trunc};
+    if (!scores_out_file.is_open()) {
+        std::cout << "Failed to open file for write: " << high_scores_filename << "!" << std::endl;
+        return -1;
+    }
+
+    for (int i = 0; i < total_users; i++) {
+        if (users[i] == username) {
+            std::cout << "Q! i=" << i << " attempts[i]" << attempts[i] << std::endl;
+            found_user = true;
+            if (attempt < attempts[i]) {
+                attempts[i] = attempt;
+            }
+            std::cout << "Q! i=" << i << " attempts[i]" << attempts[i] << std::endl;
+        }
+        std::cout << i << " " << users[i] << " " << attempts[i] << std::endl;
+        scores_out_file << users[i] << ' ';
+        scores_out_file << attempts[i];
+        scores_out_file << std::endl;
+    }
+
+    if (!found_user) {
+        // we have new user, append him
+        scores_out_file << username << ' ';
+        scores_out_file << attempt;
+        scores_out_file << std::endl;
+    }
+
+    return 0;
+}
 
 int main(int argc, char** argv)
 {
     unsigned int guess;
-    int attempts = 0;
+    unsigned int attempts = 0;
 
     process_args(argc, argv);
 
@@ -232,7 +307,8 @@ int main(int argc, char** argv)
         }
 	};
 
-    save_highscore(username, attempts);
+    // save_highscore(username, attempts);
+    save_only_min_highscore(username, attempts);
     // print_highscore();
     print_only_min_highscore();
 
