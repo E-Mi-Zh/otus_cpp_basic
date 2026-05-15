@@ -272,8 +272,6 @@ int save_only_min_highscore(const std::string username, const unsigned int attem
     bool found_user = false;
 
     total_users = load_all_scores(users, attempts, high_scores_filename);
-    std::cout << "total_users=" << total_users << std::endl;
-    std::cout << "username=" << username << "\tattempt=" << attempt << std::endl;
     if (total_users < 0) {
         std::cout << "Error loading highscores!" << std::endl;
     }
@@ -286,14 +284,11 @@ int save_only_min_highscore(const std::string username, const unsigned int attem
 
     for (int i = 0; i < total_users; i++) {
         if (users[i] == username) {
-            std::cout << "Q! i=" << i << " attempts[i]" << attempts[i] << std::endl;
             found_user = true;
             if (attempt < attempts[i]) {
                 attempts[i] = attempt;
             }
-            std::cout << "Q! i=" << i << " attempts[i]" << attempts[i] << std::endl;
         }
-        std::cout << i << " " << users[i] << " " << attempts[i] << std::endl;
         scores_out_file << users[i] << ' ';
         scores_out_file << attempts[i];
         scores_out_file << std::endl;
@@ -333,13 +328,17 @@ int main(int argc, char** argv)
 
     while (true) {
         std::cin >> guess;
+        if (std::cin.fail()) {
+    		std::cout << "Bad value, not an integer!" << std::endl;
+	    	return -1;
+    	}
         attempts++;
 
         if (guess < guessed_number) {
-            std::cout << "less than " << guess << std::endl;
+            std::cout << "greater than " << guess << std::endl;
         }
         else if (guess > guessed_number) {
-            std::cout << "greater than " << guess << std::endl;
+            std::cout << "less than " << guess << std::endl;
         }
         else {
             std::cout << "you win! attempts = " << attempts << std::endl;
