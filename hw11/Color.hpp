@@ -1,4 +1,5 @@
 #pragma once
+#include <iostream>
 
 class Color {
   public:
@@ -13,3 +14,10 @@ class Color {
     double g{};
     double b{};
 };
+
+inline std::istream& operator>>(std::istream& stream, Color& variable) {
+    double r, g, b;
+    stream >> r >> g >> b;
+    variable = Color(r, g, b);
+    return stream;
+}
