@@ -7,6 +7,7 @@
  */
 void Ball::setVelocity(const Velocity& velocity) {
     // TODO: место для доработки
+    this->velocity = velocity;
 }
 
 /**
@@ -14,7 +15,7 @@ void Ball::setVelocity(const Velocity& velocity) {
  */
 Velocity Ball::getVelocity() const {
     // TODO: место для доработки
-    return {};
+    return {velocity};
 }
 
 /**
@@ -27,6 +28,7 @@ Velocity Ball::getVelocity() const {
  */
 void Ball::draw(Painter& painter) const {
     // TODO: место для доработки
+    painter.draw(this->center, this->radius, this->color);
 }
 
 /**
@@ -35,6 +37,7 @@ void Ball::draw(Painter& painter) const {
  */
 void Ball::setCenter(const Point& center) {
     // TODO: место для доработки
+    this->center = center;
 }
 
 /**
@@ -42,7 +45,7 @@ void Ball::setCenter(const Point& center) {
  */
 Point Ball::getCenter() const {
     // TODO: место для доработки
-    return {};
+    return {center};
 }
 
 /**
@@ -52,7 +55,7 @@ Point Ball::getCenter() const {
  */
 double Ball::getRadius() const {
     // TODO: место для доработки
-    return {};
+    return {radius};
 }
 
 /**
@@ -64,5 +67,23 @@ double Ball::getRadius() const {
  */
 double Ball::getMass() const {
     // TODO: место для доработки
-    return {};
+    return {mass};
+}
+
+/**
+ * Задает цвет объекта
+ * @param color новый цвет объекта
+ */
+void Ball::setColor(const Color& color) {
+    // TODO: место для доработки
+    this->color = color;
+}
+
+
+Ball::Ball(Point point, Velocity velocity, Color color, double radius, double mass) {
+    this->radius = radius;
+    this->mass = mass;
+    setCenter(point);
+    setVelocity(velocity);
+    setColor(color);
 }
