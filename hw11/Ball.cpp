@@ -67,7 +67,7 @@ double Ball::getRadius() const {
  */
 double Ball::getMass() const {
     // TODO: место для доработки
-    return {mass};
+    return {M_PI * radius * radius * radius * 4. / 3.};
 }
 
 /**
@@ -80,9 +80,9 @@ void Ball::setColor(const Color& color) {
 }
 
 
-Ball::Ball(Point point, Velocity velocity, Color color, double radius, double mass) {
+Ball::Ball(Point point, Velocity velocity, Color color, double radius, bool isCollidable) {
     this->radius = radius;
-    this->mass = mass;
+    this->isCollidable = isCollidable;
     setCenter(point);
     setVelocity(velocity);
     setColor(color);

@@ -59,7 +59,7 @@ World::World(const std::string& worldFilePath) {
         // Здесь не хватает самого главного - создания
         // объекта класса Ball со свойствами, прочитанными
         // выше, и его помещения в контейнер balls
-        Ball ball(center, velocity, color, radius, 1);
+        Ball ball(center, velocity, color, radius, isCollidable);
 
         // После того как мы каким-то образом
         // сконструируем объект Ball ball;
