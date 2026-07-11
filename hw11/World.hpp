@@ -1,6 +1,7 @@
 #pragma once
 #include "Ball.hpp"
 #include "Physics.hpp"
+#include "Dust.hpp"
 #include <string>
 #include <vector>
 
@@ -20,6 +21,8 @@ class World {
     Physics physics;
     // Контейнер с шарами
     std::vector<Ball> balls;
+    // Контейнер с частицами
+    std::vector<Dust> dust;
     // Длина отрезка времени, который не был
     // учтен при прошлой симуляции. См. реализацию update
     double restTime = 0.;

@@ -1,4 +1,6 @@
 #include "Physics.hpp"
+#include <cstdlib>
+#include <ctime>
 
 double dot(const Point& lhs, const Point& rhs) {
     return lhs.x * rhs.x + lhs.y * rhs.y;
@@ -9,18 +11,20 @@ Physics::Physics(double timePerTick) : timePerTick{timePerTick} {}
 void Physics::setWorldBox(const Point& topLeft, const Point& bottomRight) {
     this->topLeft = topLeft;
     this->bottomRight = bottomRight;
+    srand(static_cast<unsigned int>(time(0)));
 }
 
-void Physics::update(std::vector<Ball>& balls, const size_t ticks) const {
+void Physics::update(std::vector<Ball>& balls, std::vector<Dust>& dust, const size_t ticks) const {
 
     for (size_t i = 0; i < ticks; ++i) {
         move(balls);
+        move(dust);
         collideWithBox(balls);
-        collideBalls(balls);
+        collideBalls(balls, dust);
     }
 }
 
-void Physics::collideBalls(std::vector<Ball>& balls) const {
+void Physics::collideBalls(std::vector<Ball>& balls, std::vector<Dust>& dust) const {
     for (auto a = balls.begin(); a != balls.end(); ++a) {
         if (a->isCollidable == false) continue;
         for (auto b = std::next(a); b != balls.end(); ++b) {
@@ -33,6 +37,8 @@ void Physics::collideBalls(std::vector<Ball>& balls) const {
 
             if (distanceBetweenCenters2 < collisionDistance2) {
                 processCollision(*a, *b, distanceBetweenCenters2);
+                Point center = ((a->getCenter() + b->getCenter()) / 2);
+                makeDust(dust, center);
             }
         }
     }
@@ -65,6 +71,24 @@ void Physics::move(std::vector<Ball>& balls) const {
         Point newPos =
             ball.getCenter() + ball.getVelocity().vector() * timePerTick;
         ball.setCenter(newPos);
+    }
+}
+
+void Physics::move(std::vector<Dust>& dust) const {
+    for (Dust& d : dust) {
+        Point newPos =
+            d.getCenter() + d.getVelocity().vector() * timePerTick;
+        d.setCenter(newPos);
+    }
+}
+
+// void Physics::makeDust(std::vector<Dust>& dust) const {
+void Physics::makeDust(std::vector<Dust>& dust, Point center) const {
+    for (int i = 0; i < 11; i++) {
+        Velocity velocity(30 + (rand() % 30), (rand() % 360));
+        Color color(1, 0, 0);
+        Dust d(center, velocity, color, 10);
+        dust.push_back(d);
     }
 }
 
