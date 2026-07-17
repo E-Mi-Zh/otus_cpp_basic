@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.12)
 project(containers)
 
 add_executable(containers
-     containers.cpp vector.cpp listsingle.cpp
+     containers.cpp vector.cpp listsingle.cpp listdouble.cpp
 )
 
 set_target_properties(containers PROPERTIES
