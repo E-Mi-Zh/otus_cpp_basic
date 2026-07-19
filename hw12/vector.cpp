@@ -135,3 +135,36 @@ std::ostream &operator<<(std::ostream &os, MyVector& vec) {
     os << vec.get(i);
     return os;
 }
+
+
+MyVector::iterator::iterator(int* ptr) {
+    this->cur = ptr;
+}
+
+MyVector::iterator MyVector::begin() {
+  return iterator(this->data);
+}
+
+MyVector::iterator MyVector::end() {
+  return iterator(this->data + this->pos);
+}
+
+int &MyVector::iterator::operator*() {
+    return *(this->cur);
+}
+
+int MyVector::iterator::get() {
+    return *(this->cur);
+}
+MyVector::iterator &MyVector::iterator::operator++() {
+    this->cur++;
+
+    return *this;
+}
+
+bool MyVector::iterator::operator!=(const iterator &other) {
+    return this->cur != other.cur;
+}
+bool MyVector::iterator::operator==(const iterator &other) {
+    return this->cur == other.cur;
+}

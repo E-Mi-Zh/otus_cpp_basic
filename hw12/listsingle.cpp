@@ -179,3 +179,35 @@ std::ostream &operator<<(std::ostream &os, MyListSingle& list) {
 
     return os;
 }
+
+MyListSingle::iterator::iterator(NodeSingle* ptr) {
+    this->cur = ptr;
+}
+
+MyListSingle::iterator MyListSingle::begin() {
+  return iterator(this->tail);
+}
+
+MyListSingle::iterator MyListSingle::end() {
+  return iterator(nullptr);
+}
+
+NodeSingle &MyListSingle::iterator::operator*() {
+    return *(this->cur);
+}
+
+NodeSingle MyListSingle::iterator::get() {
+    return *(this->cur);
+}
+MyListSingle::iterator &MyListSingle::iterator::operator++() {
+    this->cur = this->cur->next;
+
+    return *this;
+}
+
+bool MyListSingle::iterator::operator!=(const iterator &other) {
+    return this->cur != other.cur;
+}
+bool MyListSingle::iterator::operator==(const iterator &other) {
+    return this->cur == other.cur;
+}

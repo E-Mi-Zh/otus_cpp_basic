@@ -27,6 +27,20 @@ public:
         return get(pos);
     }
 
+    struct iterator {
+        iterator(NodeSingle* ptr);
+        NodeSingle &operator*();
+        NodeSingle get();
+        iterator& operator++();
+        bool operator!=(const iterator &other);
+        bool operator==(const iterator &other);
+    private:
+        NodeSingle* cur;
+    };
+
+    iterator begin();
+    iterator end();
+
 private:
     size_t listsize;            // данные
     NodeSingle* head;           // последний вставленный элемент (голова односвязного списка)

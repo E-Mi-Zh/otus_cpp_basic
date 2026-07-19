@@ -27,6 +27,20 @@ public:
         return get(pos);
     }
 
+    struct iterator {
+        iterator(NodeDouble* ptr);
+        NodeDouble &operator*();
+        NodeDouble get();
+        iterator& operator++();
+        bool operator!=(const iterator &other);
+        bool operator==(const iterator &other);
+    private:
+        NodeDouble* cur;
+    };
+
+    iterator begin();
+    iterator end();
+
 private:
     size_t listsize;            // данные
     NodeDouble* head;           // последний вставленный элемент (голова двусвязного списка)

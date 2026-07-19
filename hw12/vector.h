@@ -23,8 +23,21 @@ public:
 
     int operator[](size_t pos) {
         return get(pos);
-    }
+    };
 
+    struct iterator {
+        iterator(int* ptr);
+        int &operator*();
+        int get();
+        iterator& operator++();
+        bool operator!=(const iterator &other);
+        bool operator==(const iterator &other);
+    private:
+        int* cur;
+    };
+
+    iterator begin();
+    iterator end();
 
 private:
     int* data;            // данные

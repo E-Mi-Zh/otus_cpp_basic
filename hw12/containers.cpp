@@ -321,6 +321,50 @@ void test_list_double_move() {
     std::cout << "\tпосле присваивания временного объекта: " << lst5 << std::endl;
 }
 
+void test_vector_iterator() {
+    MyVector values;
+    // заполнение контейнера элементами
+    for (int i = 0; i < 10; i++) {
+        values.push_back(i);
+    }
+    std::cout << "<----------+= Проверяем работу итератора для вектора =+---------->" << std::endl;
+    for (auto iter = values.begin(); iter != values.end(); ++iter) {
+        std::cout << *iter << " ";
+    // или:
+    // std::cout << iter.get() << std::endl;
+    }
+    std::cout << std::endl;
+}
+
+void test_list_single_iterator() {
+    MyListSingle values;
+    // заполнение контейнера элементами
+    for (int i = 0; i < 10; i++) {
+        values.push_back(i);
+    }
+    std::cout << "<----------+= Проверяем работу итератора для односвязного списка =+---------->" << std::endl;
+    for (auto iter = values.begin(); iter != values.end(); ++iter) {
+        std::cout << (*iter).data << " ";
+    // или:
+    // std::cout << iter.get() << std::endl;
+    }
+    std::cout << std::endl;
+}
+
+void test_list_double_iterator() {
+    MyListDouble values;
+    // заполнение контейнера элементами
+    for (int i = 0; i < 10; i++) {
+        values.push_back(i);
+    }
+    std::cout << "<----------+= Проверяем работу итератора для двусвязного списка =+---------->" << std::endl;
+    for (auto iter = values.begin(); iter != values.end(); ++iter) {
+        std::cout << (*iter).data << " ";
+    // или:
+    // std::cout << iter.get() << std::endl;
+    }
+    std::cout << std::endl;
+}
 
 int main() {
     test_vector();
@@ -329,6 +373,9 @@ int main() {
     test_vector_move();
     test_list_single_move();
     test_list_double_move();
+    test_vector_iterator();
+    test_list_single_iterator();
+    test_list_double_iterator();
 
     return 0;
 }

@@ -185,3 +185,35 @@ std::ostream &operator<<(std::ostream &os, MyListDouble& list) {
 
     return os;
 }
+
+MyListDouble::iterator::iterator(NodeDouble* ptr) {
+    this->cur = ptr;
+}
+
+MyListDouble::iterator MyListDouble::begin() {
+  return iterator(this->tail);
+}
+
+MyListDouble::iterator MyListDouble::end() {
+  return iterator(nullptr);
+}
+
+NodeDouble &MyListDouble::iterator::operator*() {
+    return *(this->cur);
+}
+
+NodeDouble MyListDouble::iterator::get() {
+    return *(this->cur);
+}
+MyListDouble::iterator &MyListDouble::iterator::operator++() {
+    this->cur = this->cur->next;
+
+    return *this;
+}
+
+bool MyListDouble::iterator::operator!=(const iterator &other) {
+    return this->cur != other.cur;
+}
+bool MyListDouble::iterator::operator==(const iterator &other) {
+    return this->cur == other.cur;
+}

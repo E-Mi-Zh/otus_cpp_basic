@@ -11,4 +11,4 @@ set_target_properties(containers PROPERTIES
     CXX_STANDARD_REQUIRED ON
 )
 
-target_compile_options(containers PRIVATE -Wall -Wextra -pedantic -ggdb3)
+target_compile_options(containers PRIVATE -Wall -Wextra -pedantic)
