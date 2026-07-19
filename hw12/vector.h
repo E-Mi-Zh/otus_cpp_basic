@@ -15,6 +15,11 @@ public:
     size_t size();
     int get(size_t pos);
     MyVector(size_t size = MY_VECTOR_INITIAL_SZ);
+    ~MyVector();
+    MyVector(MyVector& other);
+    MyVector(MyVector&& other);
+    MyVector &operator=(MyVector &rhs);
+    MyVector &operator=(MyVector &&rhs);
 
     int operator[](size_t pos) {
         return get(pos);

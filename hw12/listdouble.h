@@ -16,6 +16,11 @@ public:
     size_t size();
     int get(size_t pos);
     MyListDouble();
+    ~MyListDouble();
+    MyListDouble(MyListDouble& other);
+    MyListDouble(MyListDouble&& other);
+    MyListDouble &operator=(MyListDouble &rhs);
+    MyListDouble &operator=(MyListDouble &&rhs);
     NodeDouble* list_head();
     NodeDouble* list_tail();
     int operator[](size_t pos) {

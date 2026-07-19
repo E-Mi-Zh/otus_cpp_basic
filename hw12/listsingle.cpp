@@ -6,6 +6,73 @@ MyListSingle::MyListSingle() {
     this->tail = nullptr;
 }
 
+MyListSingle::~MyListSingle() {
+    NodeSingle* node = this->tail;
+    NodeSingle* prev_node;
+
+    while (node != nullptr) {
+        node->data = 0;
+        prev_node = node;
+        node = node->next;
+        prev_node->next = nullptr;
+        delete prev_node;
+    }
+
+    this->listsize = 0;
+    this->head = nullptr;
+    this->tail = nullptr;
+}
+
+// Конструктор копирования
+MyListSingle::MyListSingle(MyListSingle &other) {
+    this->head = nullptr;
+    this->tail = nullptr;
+    this->listsize = 0;
+
+    NodeSingle* node = other.tail;
+
+    while (node != nullptr) {
+        this->push_back(node->data);
+        node = node->next;
+    }
+}
+
+// Конструктор перемещения
+MyListSingle::MyListSingle(MyListSingle&& other) {
+    this->head = other.head;
+    this->tail = other.tail;
+    this->listsize = other.listsize;
+    other.head = nullptr;
+    other.tail = nullptr;
+    other.listsize = 0;
+}
+
+// Copy assignment operator
+MyListSingle &MyListSingle::operator=(MyListSingle &rhs) {
+    MyListSingle temp{rhs};
+
+    NodeSingle* thead = this->head;
+    this->head = temp.head;
+    temp.head = thead;
+
+    NodeSingle* ttail = this->tail;
+    this->tail = temp.tail;
+    temp.tail = ttail;
+
+    size_t tlistsize = this->listsize;
+    this->listsize = temp.listsize;
+    temp.listsize = tlistsize;
+
+    return *this;
+}
+
+// Move assignment operator
+MyListSingle &MyListSingle::operator=(MyListSingle &&rhs) {
+    MyListSingle tmp{std::move(rhs)};
+    return *this = tmp;
+}
+
+
 size_t MyListSingle::size() {
     return this->listsize;
 }
@@ -71,7 +138,7 @@ void MyListSingle::erase(size_t pos) {
         this->head = prev_node;
     }
     node->next = nullptr;
-    delete [] node;
+    delete node;
     this->listsize--;
 }
 

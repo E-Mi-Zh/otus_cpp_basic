@@ -6,6 +6,73 @@ MyListDouble::MyListDouble() {
     this->tail = nullptr;
 }
 
+MyListDouble::~MyListDouble() {
+    NodeDouble* node = this->tail;
+    NodeDouble* prev_node;
+
+    while (node != nullptr) {
+        node->data = 0;
+        prev_node = node;
+        node = node->next;
+        prev_node->next = nullptr;
+        prev_node->prev = nullptr;
+        delete prev_node;
+    }
+
+    this->listsize = 0;
+    this->head = nullptr;
+    this->tail = nullptr;
+}
+
+// Конструктор копирования
+MyListDouble::MyListDouble(MyListDouble &other) {
+    this->head = nullptr;
+    this->tail = nullptr;
+    this->listsize = 0;
+
+    NodeDouble* node = other.tail;
+
+    while (node != nullptr) {
+        this->push_back(node->data);
+        node = node->next;
+    }
+}
+
+// Конструктор перемещения
+MyListDouble::MyListDouble(MyListDouble&& other) {
+    this->head = other.head;
+    this->tail = other.tail;
+    this->listsize = other.listsize;
+    other.head = nullptr;
+    other.tail = nullptr;
+    other.listsize = 0;
+}
+
+// Copy assignment operator
+MyListDouble &MyListDouble::operator=(MyListDouble &rhs) {
+    MyListDouble temp{rhs};
+
+    NodeDouble* thead = this->head;
+    this->head = temp.head;
+    temp.head = thead;
+
+    NodeDouble* ttail = this->tail;
+    this->tail = temp.tail;
+    temp.tail = ttail;
+
+    size_t tlistsize = this->listsize;
+    this->listsize = temp.listsize;
+    temp.listsize = tlistsize;
+
+    return *this;
+}
+
+// Move assignment operator
+MyListDouble &MyListDouble::operator=(MyListDouble &&rhs) {
+    MyListDouble tmp{std::move(rhs)};
+    return *this = tmp;
+}
+
 size_t MyListDouble::size() {
     return this->listsize;
 }
@@ -77,7 +144,7 @@ void MyListDouble::erase(size_t pos) {
     node->next->prev = node->prev;
     node->next = nullptr;
     node->prev = nullptr;
-    delete [] node;
+    delete node;
     this->listsize--;
 }
 

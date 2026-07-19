@@ -15,6 +15,12 @@ public:
     size_t size();
     int get(size_t pos);
     MyListSingle();
+    ~MyListSingle();
+    MyListSingle(MyListSingle& other);
+    MyListSingle(MyListSingle&& other);
+    MyListSingle &operator=(MyListSingle &rhs);
+    MyListSingle &operator=(MyListSingle &&rhs);
+
     NodeSingle* list_head();
     NodeSingle* list_tail();
     int operator[](size_t pos) {

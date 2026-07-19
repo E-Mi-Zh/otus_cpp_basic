@@ -8,6 +8,66 @@ MyVector::MyVector(size_t size) {
     this->pos = 0;
 }
 
+MyVector::~MyVector() {
+    this->vec_size = 0;
+    this->capacity = 0;
+    this->pos = 0;
+    delete [] this->data;
+}
+
+// Конструктор копирования
+MyVector::MyVector(MyVector &other) {
+    this->vec_size = other.vec_size;
+    this->capacity = other.capacity;
+    this->pos = other.pos;
+    this->data = new int[this->capacity];
+
+    for (size_t i = 0; i < this->pos; i++) {
+        this->data[i] = other.data[i];
+    }
+}
+
+// Конструктор перемещения
+MyVector::MyVector(MyVector&& other) {
+    this->data = other.data;
+    this->vec_size = other.vec_size;
+    this->capacity = other.capacity;
+    this->pos = other.pos;
+    other.data = nullptr;
+    other.vec_size = 0;
+    other.capacity = 0;
+    other.pos = 0;
+}
+
+// Copy assignment operator
+MyVector &MyVector::operator=(MyVector &rhs) {
+    MyVector temp{rhs};
+
+    int* tdata = this->data;
+    this->data = temp.data;
+    temp.data = tdata;
+
+    size_t tvec_size = this->vec_size;
+    this->vec_size = temp.vec_size;
+    temp.vec_size = tvec_size;
+
+    size_t tcapacity = this->capacity;
+    this->capacity = temp.capacity;
+    temp.capacity = tcapacity;
+
+    size_t tpos = this->pos;
+    this->pos = temp.pos;
+    temp.pos = tpos;
+
+    return *this;
+}
+
+// Move assignment operator
+MyVector &MyVector::operator=(MyVector &&rhs) {
+    MyVector tmp{std::move(rhs)};
+    return *this = tmp;
+}
+
 size_t MyVector::size() {
     return this->pos;
 }

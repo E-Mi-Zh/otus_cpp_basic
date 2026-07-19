@@ -165,11 +165,170 @@ void test_list_double() {
     std::cout << "\t\t\t" << values2[7] << std::endl;
 }
 
+void test_vector_move() {
+    MyVector vec1;
+
+    for (int i = 0; i < 10; i++) {
+        vec1.push_back(i);
+    }
+
+    std::cout << "<----------+= Проверяем работу перемещения для вектора =+---------->" << std::endl;
+
+    std::cout << "1. Проверка перемещающего конструктора:" << std::endl;
+    std::cout << "\tvec1: " << vec1 << std::endl;
+    std::cout << "\tvec1 size: " << vec1.size() << std::endl;
+
+    // Создаём через перемещающий конструктор
+    MyVector vec2 = std::move(vec1);
+    std::cout << "\tvec2 (после перемещения из vec1): " << vec2 << std::endl;
+    std::cout << "\tvec2 size: " << vec2.size() << std::endl;
+    std::cout << "\tvec1 size (после перемещения): " << vec1.size() << " (должен быть 0)" << std::endl;
+
+    // ===== 2. Проверка перемещающего оператора присваивания =====
+    std::cout << "2. Проверка перемещающего оператора присваивания:" << std::endl;
+
+    MyVector vec3;
+    for (int i = 0; i < 10; i++) {
+        vec3.push_back(i);
+    }
+
+    MyVector vec4;
+    for (int i = 10; i < 20; i++) {
+        vec4.push_back(i);
+    }
+    std::cout << "\tvec3: " << vec3 << std::endl;
+    std::cout << "\tvec4: " << vec4 << std::endl;
+
+    // Перемещаем через оператор присваивания
+    vec4 = std::move(vec3);
+    std::cout << "Перемещаем оператором присваивания" << std::endl;
+    std::cout << "\tvec4: " << vec4 << std::endl;
+    std::cout << "\tvec3 size: " << vec3.size() << " (должен быть 0)" << std::endl;
+
+    // ===== 3. Проверка работы с r-value ссылками (временные объекты) =====
+    std::cout << "3. Проверка работы с r-value:" << std::endl;
+
+    MyVector vec5;
+    vec5 = MyVector(10);  // Присваиваем временный объект (r-value)
+
+    for (int i = 20; i < 30; i++) {
+        vec5.push_back(i);
+    }
+    std::cout << "\tпосле присваивания временного объекта: " << vec5 << std::endl;
+}
+
+void test_list_single_move() {
+    MyListSingle lst1;
+
+    for (int i = 0; i < 10; i++) {
+        lst1.push_back(i);
+    }
+
+    std::cout << "<----------+= Проверяем работу перемещения для односвязного списка =+---------->" << std::endl;
+
+    std::cout << "1. Проверка перемещающего конструктора:" << std::endl;
+    std::cout << "\tlst1: " << lst1 << std::endl;
+    std::cout << "\tlst1 size: " << lst1.size() << std::endl;
+
+    // Создаём через перемещающий конструктор
+    MyListSingle lst2 = std::move(lst1);
+    std::cout << "\tlst2 (после перемещения из lst1): " << lst2 << std::endl;
+    std::cout << "\tlst2 size: " << lst2.size() << std::endl;
+    std::cout << "\tlst1 size (после перемещения): " << lst1.size() << " (должен быть 0)" << std::endl;
+
+    // ===== 2. Проверка перемещающего оператора присваивания =====
+    std::cout << "2. Проверка перемещающего оператора присваивания:" << std::endl;
+
+    MyListSingle lst3;
+    for (int i = 0; i < 10; i++) {
+        lst3.push_back(i);
+    }
+
+    MyListSingle lst4;
+    for (int i = 10; i < 20; i++) {
+        lst4.push_back(i);
+    }
+    std::cout << "\tlst3: " << lst3 << std::endl;
+    std::cout << "\tlst4: " << lst4 << std::endl;
+
+    // Перемещаем через оператор присваивания
+    lst4 = std::move(lst3);
+    std::cout << "Перемещаем оператором присваивания" << std::endl;
+    std::cout << "\tlst4: " << lst4 << std::endl;
+    std::cout << "\tlst3 size: " << lst3.size() << " (должен быть 0)" << std::endl;
+
+    // ===== 3. Проверка работы с r-value ссылками (временные объекты) =====
+    std::cout << "3. Проверка работы с r-value:" << std::endl;
+
+    MyListSingle lst5;
+    lst5 = MyListSingle();  // Присваиваем временный объект (r-value)
+
+    for (int i = 20; i < 30; i++) {
+        lst5.push_back(i);
+    }
+    std::cout << "\tпосле присваивания временного объекта: " << lst5 << std::endl;
+}
+
+void test_list_double_move() {
+    MyListDouble lst1;
+
+    for (int i = 0; i < 10; i++) {
+        lst1.push_back(i);
+    }
+
+    std::cout << "<----------+= Проверяем работу перемещения для двусвязного списка =+---------->" << std::endl;
+
+    std::cout << "1. Проверка перемещающего конструктора:" << std::endl;
+    std::cout << "\tlst1: " << lst1 << std::endl;
+    std::cout << "\tlst1 size: " << lst1.size() << std::endl;
+
+    // Создаём через перемещающий конструктор
+    MyListDouble lst2 = std::move(lst1);
+    std::cout << "\tlst2 (после перемещения из lst1): " << lst2 << std::endl;
+    std::cout << "\tlst2 size: " << lst2.size() << std::endl;
+    std::cout << "\tlst1 size (после перемещения): " << lst1.size() << " (должен быть 0)" << std::endl;
+
+    // ===== 2. Проверка перемещающего оператора присваивания =====
+    std::cout << "2. Проверка перемещающего оператора присваивания:" << std::endl;
+
+    MyListDouble lst3;
+    for (int i = 0; i < 10; i++) {
+        lst3.push_back(i);
+    }
+
+    MyListDouble lst4;
+    for (int i = 10; i < 20; i++) {
+        lst4.push_back(i);
+    }
+    std::cout << "\tlst3: " << lst3 << std::endl;
+    std::cout << "\tlst4: " << lst4 << std::endl;
+
+    // Перемещаем через оператор присваивания
+    lst4 = std::move(lst3);
+    std::cout << "Перемещаем оператором присваивания" << std::endl;
+    std::cout << "\tlst4: " << lst4 << std::endl;
+    std::cout << "\tlst3 size: " << lst3.size() << " (должен быть 0)" << std::endl;
+
+    // ===== 3. Проверка работы с r-value ссылками (временные объекты) =====
+    std::cout << "3. Проверка работы с r-value:" << std::endl;
+
+    MyListDouble lst5;
+    lst5 = MyListDouble();  // Присваиваем временный объект (r-value)
+
+    for (int i = 20; i < 30; i++) {
+        lst5.push_back(i);
+    }
+    std::cout << "\tпосле присваивания временного объекта: " << lst5 << std::endl;
+}
+
 
 int main() {
     test_vector();
     test_list_single();
     test_list_double();
+    test_vector_move();
+    test_list_single_move();
+    test_list_double_move();
 
     return 0;
 }
