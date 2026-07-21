@@ -1,6 +1,8 @@
 #include <iostream>
 #include <limits>
 #include <cmath>
+#include <vector>
+#include <algorithm>
 
 class IStatistics {
 public:
@@ -123,23 +125,67 @@ private:
 	Mean m_mean;
 };
 
+class Pct : public IStatistics {
+public:
+	Pct(double pct) : m_pct{pct}, m_data{} {
+		m_name = "pct" + std::to_string(static_cast<int>(m_pct * 100));
+	}
+
+	void update(double next) override {
+		m_data.push_back(next);
+	}
+
+	double eval() const override {
+		// Так как предполагается, что размер вводимых данных мал,
+		// то мы можем позволить себе полную сортировку.
+		// В противном случаем придётся смотреть (гуглить) в сторону приближённых
+		// алгоритмов с частичной сортировкой.
+		std::vector<double> m_sorted = m_data;
+		std::sort(m_sorted.begin(), m_sorted.end());
+
+        double pos = m_pct * (m_sorted.size() - 1);
+        size_t idx = static_cast<size_t>(pos);
+
+        if (idx + 1 < m_sorted.size()) {
+            double frac = pos - idx;
+            return m_sorted[idx] * (1 - frac) + m_sorted[idx + 1] * frac;
+        }
+
+        return m_sorted[idx];
+	}
+
+	const char * name() const override {
+		return m_name.c_str();
+	}
+
+private:
+	double m_pct;
+	std::vector<double> m_data;
+	std::string m_name;
+};
+
+
 int main() {
 
-	const size_t statistics_count = 4;
+	const size_t statistics_count = 6;
 	IStatistics *statistics[statistics_count];
 
 	statistics[0] = new Min{};
 	statistics[1] = new Mean{};
 	statistics[2] = new Std{};
 	statistics[3] = new Max{};
+	statistics[4] = new Pct{0.9};
+	statistics[5] = new Pct{0.95};
 
 	double val = 0;
+
 	// // для тестов
 	// for (val = 0; val < 11; val++) {
 	// 	std::cout << val << " ";
 	// }
     // std::cout << std::endl;
 	// for (val = 0; val < 11; val++) {
+
 	while (std::cin >> val) {
 		for (size_t i = 0; i < statistics_count; ++i) {
 			statistics[i]->update(val);
