@@ -7,3 +7,4 @@
 * [hw\_07](https://github.com/E-Mi-Zh/otus_cpp_basic/tree/master/hw07) - Игра «угадай число»
 * [hw\_11](https://github.com/E-Mi-Zh/otus_cpp_basic/tree/master/hw11) - «Физический симулятор»
 * [hw\_12](https://github.com/E-Mi-Zh/otus_cpp_basic/tree/master/hw12) - «Контейнеры»
+* [hw\_14](https://github.com/E-Mi-Zh/otus_cpp_basic/tree/master/hw14) - «Расчёт статистик, полиморфизм»
