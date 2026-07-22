@@ -68,8 +68,25 @@ MyListSingle &MyListSingle::operator=(MyListSingle &rhs) {
 
 // Move assignment operator
 MyListSingle &MyListSingle::operator=(MyListSingle &&rhs) {
-    MyListSingle tmp{std::move(rhs)};
-    return *this = tmp;
+    NodeSingle* node = this->tail;
+    NodeSingle* prev_node;
+
+    if (this != &rhs) {
+        while (node != nullptr) {
+            prev_node = node;
+            node = node->next;
+            delete prev_node;
+        }
+
+        this->head = rhs.head;
+        this->tail = rhs.tail;
+        this->listsize = rhs.listsize;
+
+        rhs.head = nullptr;
+        rhs.tail = nullptr;
+        rhs.listsize = 0;
+    }
+    return *this;
 }
 
 

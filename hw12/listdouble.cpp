@@ -69,8 +69,25 @@ MyListDouble &MyListDouble::operator=(MyListDouble &rhs) {
 
 // Move assignment operator
 MyListDouble &MyListDouble::operator=(MyListDouble &&rhs) {
-    MyListDouble tmp{std::move(rhs)};
-    return *this = tmp;
+    NodeDouble* node = this->tail;
+    NodeDouble* prev_node;
+
+    if (this != &rhs) {
+        while (node != nullptr) {
+            prev_node = node;
+            node = node->next;
+            delete prev_node;
+        }
+
+        this->head = rhs.head;
+        this->tail = rhs.tail;
+        this->listsize = rhs.listsize;
+
+        rhs.head = nullptr;
+        rhs.tail = nullptr;
+        rhs.listsize = 0;
+    }
+    return *this;
 }
 
 size_t MyListDouble::size() {
