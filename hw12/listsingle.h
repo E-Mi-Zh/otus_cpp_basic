@@ -16,9 +16,9 @@ public:
     int get(size_t pos);
     MyListSingle();
     ~MyListSingle();
-    MyListSingle(MyListSingle& other);
+    MyListSingle(const MyListSingle& other);
     MyListSingle(MyListSingle&& other);
-    MyListSingle &operator=(MyListSingle &rhs);
+    MyListSingle &operator=(const MyListSingle &rhs);
     MyListSingle &operator=(MyListSingle &&rhs);
 
     NodeSingle* list_head();

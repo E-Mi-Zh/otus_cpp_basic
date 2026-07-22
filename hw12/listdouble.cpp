@@ -25,7 +25,7 @@ MyListDouble::~MyListDouble() {
 }
 
 // Конструктор копирования
-MyListDouble::MyListDouble(MyListDouble &other) {
+MyListDouble::MyListDouble(const MyListDouble &other) {
     this->head = nullptr;
     this->tail = nullptr;
     this->listsize = 0;
@@ -49,7 +49,7 @@ MyListDouble::MyListDouble(MyListDouble&& other) {
 }
 
 // Copy assignment operator
-MyListDouble &MyListDouble::operator=(MyListDouble &rhs) {
+MyListDouble &MyListDouble::operator=(const MyListDouble &rhs) {
     MyListDouble temp{rhs};
 
     NodeDouble* thead = this->head;

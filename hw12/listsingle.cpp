@@ -24,7 +24,7 @@ MyListSingle::~MyListSingle() {
 }
 
 // Конструктор копирования
-MyListSingle::MyListSingle(MyListSingle &other) {
+MyListSingle::MyListSingle(const MyListSingle &other) {
     this->head = nullptr;
     this->tail = nullptr;
     this->listsize = 0;
@@ -48,7 +48,7 @@ MyListSingle::MyListSingle(MyListSingle&& other) {
 }
 
 // Copy assignment operator
-MyListSingle &MyListSingle::operator=(MyListSingle &rhs) {
+MyListSingle &MyListSingle::operator=(const MyListSingle &rhs) {
     MyListSingle temp{rhs};
 
     NodeSingle* thead = this->head;

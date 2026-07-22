@@ -16,7 +16,7 @@ MyVector::~MyVector() {
 }
 
 // Конструктор копирования
-MyVector::MyVector(MyVector &other) {
+MyVector::MyVector(const MyVector &other) {
     this->vec_size = other.vec_size;
     this->capacity = other.capacity;
     this->pos = other.pos;
@@ -40,7 +40,7 @@ MyVector::MyVector(MyVector&& other) {
 }
 
 // Copy assignment operator
-MyVector &MyVector::operator=(MyVector &rhs) {
+MyVector &MyVector::operator=(const MyVector &rhs) {
     MyVector temp{rhs};
 
     int* tdata = this->data;

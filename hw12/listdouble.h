@@ -17,9 +17,9 @@ public:
     int get(size_t pos);
     MyListDouble();
     ~MyListDouble();
-    MyListDouble(MyListDouble& other);
+    MyListDouble(const MyListDouble& other);
     MyListDouble(MyListDouble&& other);
-    MyListDouble &operator=(MyListDouble &rhs);
+    MyListDouble &operator=(const MyListDouble &rhs);
     MyListDouble &operator=(MyListDouble &&rhs);
     NodeDouble* list_head();
     NodeDouble* list_tail();
