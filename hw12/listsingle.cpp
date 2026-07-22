@@ -137,6 +137,9 @@ void MyListSingle::erase(size_t pos) {
     if (node == this->head) {
         this->head = prev_node;
     }
+    if (node == this->tail) {
+        this->tail = node->next;
+    }
     node->next = nullptr;
     delete node;
     this->listsize--;

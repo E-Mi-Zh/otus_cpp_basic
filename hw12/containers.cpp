@@ -366,6 +366,42 @@ void test_list_double_iterator() {
     std::cout << std::endl;
 }
 
+// Проверяем удаление граничных элементов в списках
+void test_fix_2() {
+    MyListSingle values;
+
+    for (int i = 0; i < 10; i++) {
+        values.push_back(i);
+    }
+    // Проверяем удаление первого элемента
+    std::cout << "Проверяем односвязный список" << std::endl;
+    std::cout << "Удаляем первый элемент" << std::endl;
+    std::cout << "\tДо удаления: " << values << std::endl;
+    values.erase(1);
+    std::cout << "\tПосле удаления: " << values << std::endl;
+    std::cout << "Удаляем последний элемент" << std::endl;
+    std::cout << "\tДо удаления: " << values << std::endl;
+    values.erase(9);
+    std::cout << "\tПосле удаления: " << values << std::endl;
+
+
+    MyListDouble values2;
+
+    for (int i = 0; i < 10; i++) {
+        values2.push_back(i);
+    }
+    // Проверяем удаление первого элемента
+    std::cout << "Проверяем двусвязный список" << std::endl;
+    std::cout << "Удаляем первый элемент" << std::endl;
+    std::cout << "\tДо удаления: " << values2 << std::endl;
+    values2.erase(1);
+    std::cout << "\tПосле удаления: " << values2 << std::endl;
+    std::cout << "Удаляем последний элемент" << std::endl;
+    std::cout << "\tДо удаления: " << values2 << std::endl;
+    values2.erase(9);
+    std::cout << "\tПосле удаления: " << values2 << std::endl;
+}
+
 int main() {
     test_vector();
     test_list_single();
@@ -377,5 +413,6 @@ int main() {
     test_list_single_iterator();
     test_list_double_iterator();
 
+    test_fix_2();
     return 0;
 }

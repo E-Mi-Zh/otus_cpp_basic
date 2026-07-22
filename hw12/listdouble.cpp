@@ -144,9 +144,15 @@ void MyListDouble::erase(size_t pos) {
     }
     if (node == this->head) {
         this->head = node->prev;
+    } else {
+        node->next->prev = node->prev;
     }
-    node->prev->next = node->next;
-    node->next->prev = node->prev;
+
+    if (node == this->tail) {
+        this->tail = node->next;
+    } else {
+        node->prev->next = node->next;
+    }
     node->next = nullptr;
     node->prev = nullptr;
     delete node;
