@@ -80,15 +80,20 @@ size_t MyListDouble::size() {
 void MyListDouble::push_back(int value) {
     NodeDouble* node = new NodeDouble{};    // создание нового узла
 
-    if (this->tail == nullptr) {
-        // сохраняем указатель на хвост только для первого вставленного элемента
-        this->tail = node;
-        this->head = node;
-    }
     node->data = value;
     node->next = nullptr;
     node->prev = this->head;
-    this->head->next = node;
+
+    if (this->tail == nullptr) {
+        // сохраняем указатель на хвост только для первого вставленного элемента
+        this->tail = node;
+        // this->head = node;
+    } else {
+        // если в списке уже есть узлы, устанавливаем ссылку у предыдущего
+        // узла на новый, только что созданный (последний)
+        this->head->next = node;
+    }
+
     this->head = node;
     this->listsize++;
 }
