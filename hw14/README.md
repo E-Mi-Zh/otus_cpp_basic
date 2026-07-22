@@ -34,5 +34,10 @@ pct95 = 9.5
 
 ## Алгоритмы
 
-Для расчёта среднего и СКО использовался алгоритм Уэлфорда: https://habr.com/ru/articles/333426/, 
-https://stackoverflow.com/questions/15638612/calculating-mean-and-standard-deviation-of-the-data-which-does-not-fit-in-memory/15638726#15638726
+Для расчёта среднего и СКО использовался алгоритм Уэлфорда:
+
+* https://habr.com/ru/articles/333426/
+* https://stackoverflow.com/questions/15638612/calculating-mean-and-standard-deviation-of-the-data-which-does-not-fit-in-memory/15638726#15638726
+
+Т.к. размер входных данных предполагается сравнительно небольшим, то для
+расчёта персентилей сохраняли все вводимые данные с последующей сортировкой.
