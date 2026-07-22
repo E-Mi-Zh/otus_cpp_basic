@@ -101,7 +101,8 @@ void MyVector::push_back(int value) {
 }
 
 void MyVector::insert(int value, size_t pos) {
-    if (this->vec_size == 0) {
+    // В векторе ещё не было ни одного элемента, просто добавляем новый в конец
+    if (this->pos == 0) {
         this->push_back(value);
         return;
     }
@@ -121,21 +122,14 @@ void MyVector::insert(int value, size_t pos) {
         this->data = new_region;                        // сохранение новой в мембер
     }
 
-    if (pos == 0) {
-        // Т.к. мы оперируем порядковым номером элемента, а не его
-        // индексом, то pos - это номер элемента, перед которым мы вставляем.
-        // Для непустого вектора (пустой мы уже обработали) всегда будет первый элемент
-        pos = 1;
-    }
-
     // Пропускаем все элементы до вставляемой позиции
     // Затем идём с конца и до искомого индекса, меняя местами
     // последний (неинициализированный элемент и предшествующий)
-    for (size_t i = this->pos; i > pos-1; i--) {
+    for (size_t i = this->pos; i > pos; i--) {
         this->data[i] = this->data[i-1];
     }
     // Можно сохранять новое значение
-    this->data[pos-1] = value;
+    this->data[pos] = value;
     this->vec_size++;
     this->pos++;
 }
@@ -144,7 +138,7 @@ void MyVector::erase(size_t pos) {
     // Пропускаем все элементы до удаляемой позиции
     // Затем идём от искомого индекса и до конца, меняя местами
     // текущий элемент и следующий
-    for (size_t i = pos-1; i < this->pos; i++) {
+    for (size_t i = pos; i < this->pos; i++) {
         this->data[i] = this->data[i+1];
     }
     this->vec_size--;

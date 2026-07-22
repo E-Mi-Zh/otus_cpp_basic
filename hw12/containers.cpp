@@ -22,9 +22,9 @@ void test_vector() {
     std::cout << "5. удаление третьего (по счёту), пятого и седьмого элементов" << std::endl;
     std::cout << "6. вывод содержимого контейнера на экран" << std::endl;
     std::cout << "   ожидаемый результат:\t0, 1, 3, 5, 7, 8, 9" << std::endl;
-    values.erase(3);
-    values.erase(5);
-    values.erase(7);
+    values.erase(2);
+    values.erase(4);
+    values.erase(6);
     std::cout << "\t\t\t" << values << std::endl;
     std::cout << "Такой результат получился вследствие того, что индексы при удалении пересчитываются." << std::endl;
     std::cout << "Как вариант можно удалять с конца, тогда результат совпадёт." << std::endl;
@@ -32,25 +32,25 @@ void test_vector() {
     for (int i = 0; i < 10; i++) {
         values2.push_back(i);
     }
-    values2.erase(7);
-    values2.erase(5);
-    values2.erase(3);
+    values2.erase(6);
+    values2.erase(4);
+    values2.erase(2);
     std::cout << "   ожидаемый результат:\t0, 1, 3, 5, 7, 8, 9" << std::endl;
     std::cout << "\t\t\t" << values2 << std::endl;
     std::cout << "7. добавление элемента 10 в начало контейнера" << std::endl;
     std::cout << "8. вывод содержимого контейнера на экран" << std::endl;
     std::cout << "   ожидаемый результат:\t10, 0, 1, 3, 5, 7, 8, 9" << std::endl;
-    values2.insert(10, 1);
+    values2.insert(10, 0);
     std::cout << "\t\t\t" << values2 << std::endl;
     std::cout << "9. добавление элемента 20 в середину контейнера" << std::endl;
     std::cout << "10. вывод содержимого контейнера на экран" << std::endl;
     std::cout << "   ожидаемый результат:\t10, 0, 1, 3, 20, 5, 7, 8, 9" << std::endl;
-    values2.insert(20, 5);
+    values2.insert(20, 4);
     std::cout << "\t\t\t" << values2 << std::endl;
     std::cout << "11. добавление элемента 30 в конец контейнера" << std::endl;
     std::cout << "12. вывод содержимого контейнера на экран" << std::endl;
     std::cout << "   ожидаемый результат:\t10, 0, 1, 3, 20, 5, 7, 8, 9, 30" << std::endl;
-    values2.insert(30, 10);
+    values2.insert(30, 9);
     std::cout << "\t\t\t" << values2 << std::endl;
     std::cout << "13. вывод элемента контейнера с индексом 7 (container[7])" << std::endl;
     std::cout << "   ожидаемый результат:\t8" << std::endl;
@@ -76,9 +76,9 @@ void test_list_single() {
     std::cout << "5. удаление третьего (по счёту), пятого и седьмого элементов" << std::endl;
     std::cout << "6. вывод содержимого контейнера на экран" << std::endl;
     std::cout << "   ожидаемый результат:\t0, 1, 3, 5, 7, 8, 9" << std::endl;
-    values.erase(3);
-    values.erase(5);
-    values.erase(7);
+    values.erase(2);
+    values.erase(4);
+    values.erase(6);
     std::cout << "\t\t\t" << values << std::endl;
     std::cout << "Такой результат получился вследствие того, что индексы при удалении пересчитываются." << std::endl;
     std::cout << "Как вариант можно удалять с конца, тогда результат совпадёт." << std::endl;
@@ -86,25 +86,25 @@ void test_list_single() {
     for (int i = 0; i < 10; i++) {
         values2.push_back(i);
     }
-    values2.erase(7);
-    values2.erase(5);
-    values2.erase(3);
+    values2.erase(6);
+    values2.erase(4);
+    values2.erase(2);
     std::cout << "   ожидаемый результат:\t0, 1, 3, 5, 7, 8, 9" << std::endl;
     std::cout << "\t\t\t" << values2 << std::endl;
     std::cout << "7. добавление элемента 10 в начало контейнера" << std::endl;
     std::cout << "8. вывод содержимого контейнера на экран" << std::endl;
     std::cout << "   ожидаемый результат:\t10, 0, 1, 3, 5, 7, 8, 9" << std::endl;
-    values2.insert(10, 1);
+    values2.insert(10, 0);
     std::cout << "\t\t\t" << values2 << std::endl;
     std::cout << "9. добавление элемента 20 в середину контейнера" << std::endl;
     std::cout << "10. вывод содержимого контейнера на экран" << std::endl;
     std::cout << "   ожидаемый результат:\t10, 0, 1, 3, 20, 5, 7, 8, 9" << std::endl;
-    values2.insert(20, 5);
+    values2.insert(20, 4);
     std::cout << "\t\t\t" << values2 << std::endl;
     std::cout << "11. добавление элемента 30 в конец контейнера" << std::endl;
     std::cout << "12. вывод содержимого контейнера на экран" << std::endl;
     std::cout << "   ожидаемый результат:\t10, 0, 1, 3, 20, 5, 7, 8, 9, 30" << std::endl;
-    values2.insert(30, 10);
+    values2.insert(30, 9);
     std::cout << "\t\t\t" << values2 << std::endl;
     std::cout << "13. вывод элемента контейнера с индексом 7 (container[7])" << std::endl;
     std::cout << "   ожидаемый результат:\t8" << std::endl;
@@ -130,9 +130,9 @@ void test_list_double() {
     std::cout << "5. удаление третьего (по счёту), пятого и седьмого элементов" << std::endl;
     std::cout << "6. вывод содержимого контейнера на экран" << std::endl;
     std::cout << "   ожидаемый результат:\t0, 1, 3, 5, 7, 8, 9" << std::endl;
-    values.erase(3);
-    values.erase(5);
-    values.erase(7);
+    values.erase(2);
+    values.erase(4);
+    values.erase(6);
     std::cout << "\t\t\t" << values << std::endl;
     std::cout << "Такой результат получился вследствие того, что индексы при удалении пересчитываются." << std::endl;
     std::cout << "Как вариант можно удалять с конца, тогда результат совпадёт." << std::endl;
@@ -140,25 +140,25 @@ void test_list_double() {
     for (int i = 0; i < 10; i++) {
         values2.push_back(i);
     }
-    values2.erase(7);
-    values2.erase(5);
-    values2.erase(3);
+    values2.erase(6);
+    values2.erase(4);
+    values2.erase(2);
     std::cout << "   ожидаемый результат:\t0, 1, 3, 5, 7, 8, 9" << std::endl;
     std::cout << "\t\t\t" << values2 << std::endl;
     std::cout << "7. добавление элемента 10 в начало контейнера" << std::endl;
     std::cout << "8. вывод содержимого контейнера на экран" << std::endl;
     std::cout << "   ожидаемый результат:\t10, 0, 1, 3, 5, 7, 8, 9" << std::endl;
-    values2.insert(10, 1);
+    values2.insert(10, 0);
     std::cout << "\t\t\t" << values2 << std::endl;
     std::cout << "9. добавление элемента 20 в середину контейнера" << std::endl;
     std::cout << "10. вывод содержимого контейнера на экран" << std::endl;
     std::cout << "   ожидаемый результат:\t10, 0, 1, 3, 20, 5, 7, 8, 9" << std::endl;
-    values2.insert(20, 5);
+    values2.insert(20, 4);
     std::cout << "\t\t\t" << values2 << std::endl;
     std::cout << "11. добавление элемента 30 в конец контейнера" << std::endl;
     std::cout << "12. вывод содержимого контейнера на экран" << std::endl;
     std::cout << "   ожидаемый результат:\t10, 0, 1, 3, 20, 5, 7, 8, 9, 30" << std::endl;
-    values2.insert(30, 10);
+    values2.insert(30, 9);
     std::cout << "\t\t\t" << values2 << std::endl;
     std::cout << "13. вывод элемента контейнера с индексом 7 (container[7])" << std::endl;
     std::cout << "   ожидаемый результат:\t8" << std::endl;
@@ -377,11 +377,11 @@ void test_fix_2() {
     std::cout << "Проверяем односвязный список" << std::endl;
     std::cout << "Удаляем первый элемент" << std::endl;
     std::cout << "\tДо удаления: " << values << std::endl;
-    values.erase(1);
+    values.erase(0);
     std::cout << "\tПосле удаления: " << values << std::endl;
     std::cout << "Удаляем последний элемент" << std::endl;
     std::cout << "\tДо удаления: " << values << std::endl;
-    values.erase(9);
+    values.erase(8);
     std::cout << "\tПосле удаления: " << values << std::endl;
 
 
@@ -411,10 +411,7 @@ void test_fix_3() {
     std::cout << "Проверяем вставку в вектор" << std::endl;
     std::cout << "Вставляем перед первым элементом" << std::endl;
     std::cout << "\tДо вставки: " << values << std::endl;
-    values.insert(77, 1);
-    std::cout << "\tПосле вставки: " << values << std::endl;
-    std::cout << "\tТеперь с pos=0: " << values << std::endl;
-    values.insert(88, 0);
+    values.insert(77, 0);
     std::cout << "\tПосле вставки: " << values << std::endl;
 
     MyVector values2;
@@ -424,11 +421,6 @@ void test_fix_3() {
     std::cout << "\tДо вставки c pos=0: " << values2 << std::endl;
     values2.insert(77, 0);
     std::cout << "\tПосле вставки: " << values2 << std::endl;
-    std::cout << "\tТеперь с pos=1: " << values2 << std::endl;
-    values2.insert(88, 0);
-    std::cout << "\tПосле вставки: " << values2 << std::endl;
-
-
 }
 
 int main() {

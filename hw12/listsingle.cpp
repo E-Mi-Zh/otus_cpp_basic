@@ -111,11 +111,11 @@ void MyListSingle::push_back(int value) {
 void MyListSingle::insert(int value, size_t pos) {
     NodeSingle* node = this->tail;
     NodeSingle* new_node = new NodeSingle{};
-    size_t ins_pos = 1;
+    size_t ins_pos = 0;
 
     while ((node != nullptr) && (ins_pos != pos)) {
-        ins_pos++;
         node = node->next;
+        ins_pos++;
     }
 
     if (node == nullptr) {
@@ -143,18 +143,35 @@ void MyListSingle::insert(int value, size_t pos) {
 void MyListSingle::erase(size_t pos) {
     NodeSingle* node = this->tail;
     NodeSingle* prev_node = this->tail;
-    size_t del_pos = 1;
+    size_t del_pos = 0;
 
+    if (this->listsize == 0) {
+        // в пустом списке и удалять нечего
+        return;
+    }
+
+    if (pos > (this->listsize - 1)) {
+        pos = this->listsize - 1;
+    }
+    // std::cout << "listsize=" << this->listsize << " tail" << this->tail << " head" << this->head << std::endl;
+    // while ((node->next != nullptr) && (del_pos != pos)) {
     while ((node != nullptr) && (del_pos != pos)) {
-        del_pos++;
+        // std::cout << "before del_pos=" << del_pos << " pos=" << pos << " data=" << node->data << " prev_node" << prev_node << " node" << node << " node.next" << node->next << std::endl;
         prev_node = node;
         node = node->next;
+        del_pos++;
+        // std::cout << "after del_pos=" << del_pos << " pos=" << pos << " data=" << node->data << " prev_node" << prev_node << " node" << node << " node.next" << node->next << std::endl;
     }
-    prev_node->next = node->next;
+
     if (node == this->head) {
+        // std::cout << "head!" << std::endl;
         this->head = prev_node;
+        this->head->next = nullptr;
+    } else {
+        prev_node->next = node->next;
     }
     if (node == this->tail) {
+        // std::cout << "tail!" << std::endl;
         this->tail = node->next;
     }
     node->next = nullptr;

@@ -118,11 +118,11 @@ void MyListDouble::push_back(int value) {
 void MyListDouble::insert(int value, size_t pos) {
     NodeDouble* node = this->tail;
     NodeDouble* new_node = new NodeDouble{};
-    size_t ins_pos = 1;
+    size_t ins_pos = 0;
 
     while ((node != nullptr) && (ins_pos != pos)) {
-        ins_pos++;
         node = node->next;
+        ins_pos++;
     }
 
     if (node == nullptr) {
@@ -153,14 +153,23 @@ void MyListDouble::insert(int value, size_t pos) {
 
 void MyListDouble::erase(size_t pos) {
     NodeDouble* node = this->tail;
-    size_t del_pos = 1;
+    size_t del_pos = 0;
 
+    if (this->listsize == 0) {
+        // в пустом списке и удалять нечего
+        return;
+    }
+
+    if (pos > (this->listsize - 1)) {
+        pos = (this->listsize - 1);
+    }
     while ((node != nullptr) && (del_pos != pos)) {
-        del_pos++;
         node = node->next;
+        del_pos++;
     }
     if (node == this->head) {
         this->head = node->prev;
+        this->head->next = nullptr;
     } else {
         node->next->prev = node->prev;
     }
