@@ -344,7 +344,7 @@ void test_list_single_iterator() {
     }
     std::cout << "<----------+= Проверяем работу итератора для односвязного списка =+---------->" << std::endl;
     for (auto iter = values.begin(); iter != values.end(); ++iter) {
-        std::cout << (*iter).data << " ";
+        std::cout << *iter << " ";
     // или:
     // std::cout << iter.get() << std::endl;
     }
@@ -359,7 +359,7 @@ void test_list_double_iterator() {
     }
     std::cout << "<----------+= Проверяем работу итератора для двусвязного списка =+---------->" << std::endl;
     for (auto iter = values.begin(); iter != values.end(); ++iter) {
-        std::cout << (*iter).data << " ";
+        std::cout << *iter << " ";
     // или:
     // std::cout << iter.get() << std::endl;
     }

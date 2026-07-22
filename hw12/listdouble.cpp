@@ -219,19 +219,31 @@ MyListDouble::iterator::iterator(NodeDouble* ptr) {
 }
 
 MyListDouble::iterator MyListDouble::begin() {
-  return iterator(this->tail);
+    return iterator(this->tail);
 }
 
 MyListDouble::iterator MyListDouble::end() {
-  return iterator(nullptr);
+    return iterator(nullptr);
 }
 
-NodeDouble &MyListDouble::iterator::operator*() {
-    return *(this->cur);
+int &MyListDouble::iterator::operator*() {
+    if (this->cur == nullptr) {
+        std::cout << "Ошибка при работе с итератором: доступ по нулевому указателю!" << std::endl;
+        std::cout << "Завершаем программу!" << std::endl;
+        exit(-1);
+    } else {
+        return this->cur->data;
+    }
 }
 
-NodeDouble MyListDouble::iterator::get() {
-    return *(this->cur);
+int MyListDouble::iterator::get() {
+    if (this->cur == nullptr) {
+        std::cout << "Ошибка при работе с итератором: доступ по нулевому указателю!" << std::endl;
+        std::cout << "Возвращаем ноль!" << std::endl;
+        return 0;
+    } else {
+        return this->cur->data;
+    }
 }
 MyListDouble::iterator &MyListDouble::iterator::operator++() {
     this->cur = this->cur->next;

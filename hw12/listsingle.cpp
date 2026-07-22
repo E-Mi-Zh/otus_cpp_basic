@@ -205,19 +205,31 @@ MyListSingle::iterator::iterator(NodeSingle* ptr) {
 }
 
 MyListSingle::iterator MyListSingle::begin() {
-  return iterator(this->tail);
+    return iterator(this->tail);
 }
 
 MyListSingle::iterator MyListSingle::end() {
-  return iterator(nullptr);
+    return iterator(nullptr);
 }
 
-NodeSingle &MyListSingle::iterator::operator*() {
-    return *(this->cur);
+int &MyListSingle::iterator::operator*() {
+    if (this->cur == nullptr) {
+        std::cout << "Ошибка при работе с итератором: доступ по нулевому указателю!" << std::endl;
+        std::cout << "Завершаем программу!" << std::endl;
+        exit(-1);
+    } else {
+        return this->cur->data;
+    }
 }
 
-NodeSingle MyListSingle::iterator::get() {
-    return *(this->cur);
+int MyListSingle::iterator::get() {
+    if (this->cur == nullptr) {
+        std::cout << "Ошибка при работе с итератором: доступ по нулевому указателю!" << std::endl;
+        std::cout << "Возвращаем ноль!" << std::endl;
+        return 0;
+    } else {
+        return this->cur->data;
+    }
 }
 MyListSingle::iterator &MyListSingle::iterator::operator++() {
     this->cur = this->cur->next;

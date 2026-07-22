@@ -21,6 +21,7 @@ public:
     MyListDouble(MyListDouble&& other);
     MyListDouble &operator=(const MyListDouble &rhs);
     MyListDouble &operator=(MyListDouble &&rhs);
+
     NodeDouble* list_head();
     NodeDouble* list_tail();
     int operator[](size_t pos) {
@@ -29,8 +30,8 @@ public:
 
     struct iterator {
         iterator(NodeDouble* ptr);
-        NodeDouble &operator*();
-        NodeDouble get();
+        int &operator*();
+        int get();
         iterator& operator++();
         bool operator!=(const iterator &other);
         bool operator==(const iterator &other);

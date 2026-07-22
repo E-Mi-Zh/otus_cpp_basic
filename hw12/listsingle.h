@@ -29,8 +29,8 @@ public:
 
     struct iterator {
         iterator(NodeSingle* ptr);
-        NodeSingle &operator*();
-        NodeSingle get();
+        int &operator*();
+        int get();
         iterator& operator++();
         bool operator!=(const iterator &other);
         bool operator==(const iterator &other);
