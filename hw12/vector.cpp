@@ -64,8 +64,19 @@ MyVector &MyVector::operator=(MyVector &rhs) {
 
 // Move assignment operator
 MyVector &MyVector::operator=(MyVector &&rhs) {
-    MyVector tmp{std::move(rhs)};
-    return *this = tmp;
+    if (this != &rhs) {
+        delete [] this->data;
+        this->data = rhs.data;
+        this->vec_size = rhs.vec_size;
+        this->capacity = rhs.capacity;
+        this->pos = rhs.pos;
+
+        rhs.data = nullptr;
+        rhs.capacity = 0;
+        rhs.pos = 0;
+        rhs.vec_size = 0;
+    }
+    return *this;
 }
 
 size_t MyVector::size() {
