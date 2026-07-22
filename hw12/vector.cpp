@@ -90,7 +90,16 @@ void MyVector::push_back(int value) {
 }
 
 void MyVector::insert(int value, size_t pos) {
-    // size_t new_size = this->pos++;
+    if (this->vec_size == 0) {
+        this->push_back(value);
+        return;
+    }
+
+    if (pos > this->pos) {
+        // вставляем в конец
+        pos = this->pos;
+    }
+
     if (this->pos == this->capacity) {
         this->capacity = static_cast<size_t>(this->capacity * MY_VECTOR_COEF);
         int* new_region = new int[this->capacity];      // новая область памяти
@@ -100,6 +109,14 @@ void MyVector::insert(int value, size_t pos) {
         delete [] this->data;                           // удаление старой области
         this->data = new_region;                        // сохранение новой в мембер
     }
+
+    if (pos == 0) {
+        // Т.к. мы оперируем порядковым номером элемента, а не его
+        // индексом, то pos - это номер элемента, перед которым мы вставляем.
+        // Для непустого вектора (пустой мы уже обработали) всегда будет первый элемент
+        pos = 1;
+    }
+
     // Пропускаем все элементы до вставляемой позиции
     // Затем идём с конца и до искомого индекса, меняя местами
     // последний (неинициализированный элемент и предшествующий)
@@ -129,6 +146,10 @@ int MyVector::get(size_t pos) {
 
 std::ostream &operator<<(std::ostream &os, MyVector& vec) {
     size_t i;
+    if (vec.size() == 0) {
+        // в пустом контейнере печатать нечего
+        return os;
+    }
     for (i = 0; i < (vec.size() - 1); i++) {
         os << vec.get(i) << ", ";
     }

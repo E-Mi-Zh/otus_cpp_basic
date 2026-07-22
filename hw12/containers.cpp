@@ -402,6 +402,35 @@ void test_fix_2() {
     std::cout << "\tПосле удаления: " << values2 << std::endl;
 }
 
+void test_fix_3() {
+    MyVector values;
+
+    for (int i = 0; i < 10; i++) {
+        values.push_back(i);
+    }
+    std::cout << "Проверяем вставку в вектор" << std::endl;
+    std::cout << "Вставляем перед первым элементом" << std::endl;
+    std::cout << "\tДо вставки: " << values << std::endl;
+    values.insert(77, 1);
+    std::cout << "\tПосле вставки: " << values << std::endl;
+    std::cout << "\tТеперь с pos=0: " << values << std::endl;
+    values.insert(88, 0);
+    std::cout << "\tПосле вставки: " << values << std::endl;
+
+    MyVector values2;
+
+    std::cout << "Проверяем вставку в пустой вектор" << std::endl;
+    std::cout << "Вставляем перед первым элементом" << std::endl;
+    std::cout << "\tДо вставки c pos=0: " << values2 << std::endl;
+    values2.insert(77, 0);
+    std::cout << "\tПосле вставки: " << values2 << std::endl;
+    std::cout << "\tТеперь с pos=1: " << values2 << std::endl;
+    values2.insert(88, 0);
+    std::cout << "\tПосле вставки: " << values2 << std::endl;
+
+
+}
+
 int main() {
     test_vector();
     test_list_single();
@@ -414,5 +443,6 @@ int main() {
     test_list_double_iterator();
 
     test_fix_2();
+    test_fix_3();
     return 0;
 }
