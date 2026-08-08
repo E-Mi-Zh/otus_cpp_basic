@@ -276,3 +276,29 @@ TEST(list, delete_constructor_check_elements) {
     }
     ASSERT_EQ(CounterL::counter, expected);
 }
+
+// перемещение контейнера
+TEST(list, move_assignment) {
+    // Arrange
+    MyListSingle l1;
+    MyListSingle l2;
+    const int sz = 5;
+
+    for (int i = 0; i < sz; i++) {
+        l1.push_back(i);
+    }
+
+    for (int i = 0; i < (sz * 2); i++) {
+        l2.push_back(i*10);
+    }
+
+    // Act
+    l2 = std::move(l1);
+
+    // Assert
+    ASSERT_EQ(l2.size(), sz);
+    for (int i = 0; i < sz; i++) {
+        ASSERT_EQ(l2.get(i), i);
+    }
+    ASSERT_EQ(l1.size(), 0);
+}

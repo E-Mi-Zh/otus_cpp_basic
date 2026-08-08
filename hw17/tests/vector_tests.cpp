@@ -276,3 +276,29 @@ TEST(vector, delete_constructor_check_elements) {
     }
     ASSERT_EQ(Counter::counter, expected);
 }
+
+// перемещение контейнера
+TEST(vector, move_assignment) {
+    // Arrange
+    MyVector v1;
+    MyVector v2;
+    const int sz = 5;
+
+    for (int i = 0; i < sz; i++) {
+        v1.push_back(i);
+    }
+
+    for (int i = 0; i < (sz * 2); i++) {
+        v2.push_back(i*10);
+    }
+
+    // Act
+    v2 = std::move(v1);
+
+    // Assert
+    ASSERT_EQ(v2.size(), sz);
+    for (int i = 0; i < sz; i++) {
+        ASSERT_EQ(v2.get(i), i);
+    }
+    ASSERT_EQ(v1.size(), 0);
+}
