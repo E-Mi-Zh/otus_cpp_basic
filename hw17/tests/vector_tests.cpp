@@ -1,5 +1,6 @@
 #include "../src/vector.h"
 #include <gtest/gtest.h>
+#include <vector>
 
 // создание контейнера
 TEST(vector, create) {
@@ -240,4 +241,38 @@ TEST(vector, delete_constructor_many) {
         // Assert
         // v.~MyVector();
     });
+}
+
+// Чтобы проверить фактическое удаление элементов наш контейнер должен
+// поддерживать работу с чем-то сложнее чем int.
+// Переписывать свои контейнеры не хочу, поэтому покажу на примере стандартного.
+
+// удаление контейнера с проверкой удаления элементов
+class Counter {
+    public:
+        static int counter;
+        Counter() = default;
+        ~Counter() {
+            counter++;
+        }
+};
+int Counter::counter;
+
+TEST(vector, delete_constructor_check_elements) {
+    const int expected = 5;
+
+    Counter::counter = 0;
+    {
+        // Arrange
+        std::vector<Counter> v;
+        v.reserve(expected);
+
+        // Act
+        for (int i = 0; i < expected; i++) {
+            v.emplace_back();
+        }
+
+        // Assert
+    }
+    ASSERT_EQ(Counter::counter, expected);
 }

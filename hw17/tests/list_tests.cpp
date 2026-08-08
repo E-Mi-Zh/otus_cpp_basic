@@ -1,5 +1,6 @@
 #include "../src/listsingle.h"
 #include <gtest/gtest.h>
+#include <list>
 
 // создание контейнера
 TEST(list, create) {
@@ -241,4 +242,37 @@ TEST(list, delete_constructor_many) {
         // Assert
         // l.~MyListSingle();
     });
+}
+
+// Чтобы проверить фактическое удаление элементов наш контейнер должен
+// поддерживать работу с чем-то сложнее чем int.
+// Переписывать свои контейнеры не хочу, поэтому покажу на примере стандартного.
+
+// удаление контейнера с проверкой удаления элементов
+class CounterL {
+    public:
+        static int counter;
+        CounterL() = default;
+        ~CounterL() {
+            counter++;
+        }
+};
+int CounterL::counter;
+
+TEST(list, delete_constructor_check_elements) {
+    const int expected = 5;
+
+    CounterL::counter = 0;
+    {
+        // Arrange
+        std::list<CounterL> l;
+
+        // Act
+        for (int i = 0; i < expected; i++) {
+            l.emplace_back();
+        }
+
+        // Assert
+    }
+    ASSERT_EQ(CounterL::counter, expected);
 }
