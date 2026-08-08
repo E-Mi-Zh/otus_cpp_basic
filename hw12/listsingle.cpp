@@ -101,10 +101,11 @@ void MyListSingle::push_back(int value) {
         // сохраняем указатель на хвост только для первого вставленного элемента
         this->tail = node;
         this->head = node;
+    } else {
+        this->head->next = node;
+        this->head = node;
     }
     node->data = value;
-    this->head->next = node;
-    this->head = node;
     this->listsize++;
 }
 
