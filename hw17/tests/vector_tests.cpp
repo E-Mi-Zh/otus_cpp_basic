@@ -176,3 +176,24 @@ TEST(vector, delete_middle) {
     // Assert
     ASSERT_EQ(v.size(), expected);
 }
+
+// копирование контейнера
+TEST(vector, copy_constructor) {
+    // Arrange
+    const size_t sz = 5;
+    MyVector v1(sz);
+    // MyVector v2(sz);
+
+    for (size_t i = 0; i < sz; i++) {
+        v1.push_back(i);
+    }
+
+    // Act
+    MyVector v2 = v1;
+
+    // Assert
+    ASSERT_EQ(v1.size(), v2.size());
+    for (size_t i = 0; i < sz; i++) {
+        ASSERT_EQ(v1.get(i), v2.get(i));
+    }
+}
