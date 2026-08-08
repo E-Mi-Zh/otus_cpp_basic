@@ -182,7 +182,6 @@ TEST(vector, copy_constructor) {
     // Arrange
     const size_t sz = 5;
     MyVector v1(sz);
-    // MyVector v2(sz);
 
     for (size_t i = 0; i < sz; i++) {
         v1.push_back(i);
@@ -196,4 +195,49 @@ TEST(vector, copy_constructor) {
     for (size_t i = 0; i < sz; i++) {
         ASSERT_EQ(v1.get(i), v2.get(i));
     }
+}
+
+// удаление пустого контейнера
+TEST(vector, delete_constructor_empty) {
+    EXPECT_NO_THROW({
+        // Arrange
+        MyVector v;
+
+        // Act
+
+        // Assert
+        // v.~MyVector();
+    });
+}
+
+// удаление контейнера с одним элементом
+TEST(vector, delete_constructor_one) {
+    EXPECT_NO_THROW({
+        // Arrange
+        MyVector v;
+
+        // Act
+        v.push_back(7);
+
+        // Assert
+        // v.~MyVector();
+    });
+}
+
+// удаление контейнера с несколькими элементами
+TEST(vector, delete_constructor_many) {
+    EXPECT_NO_THROW({
+        // Arrange
+        MyVector v;
+
+        // Act
+        v.push_back(1);
+        v.push_back(2);
+        v.push_back(3);
+        v.push_back(4);
+        v.push_back(5);
+
+        // Assert
+        // v.~MyVector();
+    });
 }

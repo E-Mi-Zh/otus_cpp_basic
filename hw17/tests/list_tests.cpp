@@ -197,3 +197,48 @@ TEST(list, copy_constructor) {
         ASSERT_EQ(l1.get(i), l2.get(i));
     }
 }
+
+// удаление пустого контейнера
+TEST(list, delete_constructor_empty) {
+    EXPECT_NO_THROW({
+        // Arrange
+        MyListSingle l;
+
+        // Act
+
+        // Assert
+        // l.~MyListSingle();
+    });
+}
+
+// удаление контейнера с одним элементом
+TEST(list, delete_constructor_one) {
+    EXPECT_NO_THROW({
+        // Arrange
+        MyListSingle l;
+
+        // Act
+        l.push_back(7);
+
+        // Assert
+        // l.~MyListSingle();
+    });
+}
+
+// удаление контейнера с несколькими элементами
+TEST(list, delete_constructor_many) {
+    EXPECT_NO_THROW({
+        // Arrange
+        MyListSingle l;
+
+        // Act
+        l.push_back(1);
+        l.push_back(2);
+        l.push_back(3);
+        l.push_back(4);
+        l.push_back(5);
+
+        // Assert
+        // l.~MyListSingle();
+    });
+}
