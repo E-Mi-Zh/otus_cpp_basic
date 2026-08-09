@@ -1,6 +1,5 @@
-#include "../src/listsingle.h"
+#include "../src/listsingle.hpp"
 #include <gtest/gtest.h>
-#include <list>
 
 // создание контейнера
 TEST(list, create) {
@@ -10,7 +9,7 @@ TEST(list, create) {
 
     // Assert
     EXPECT_NO_THROW({
-        MyListSingle l;
+        MyListSingle<int> l;
     });
 
 }
@@ -18,7 +17,7 @@ TEST(list, create) {
 // получение размера контейнера (фактическое количество элементов)
 TEST(list, get_size) {
     // Arrange
-    MyListSingle l;
+    MyListSingle<int> l;
     const size_t expected = 0;
 
     // Act
@@ -30,7 +29,7 @@ TEST(list, get_size) {
 // получение элементов из контейнера
 TEST(list, get_value) {
     // Arrange
-    MyListSingle l;
+    MyListSingle<int> l;
     const int value = 7;
 
     // Act
@@ -43,7 +42,7 @@ TEST(list, get_value) {
 // вставка элементов в конец
 TEST(list, push_back) {
     // Arrange
-    MyListSingle l;
+    MyListSingle<int> l;
     const size_t expected = 1;
 
     // Act
@@ -56,7 +55,7 @@ TEST(list, push_back) {
 // получение размера контейнера (фактическое количество элементов)
 TEST(list, get_size_after_push_back) {
     // Arrange
-    MyListSingle l;
+    MyListSingle<int> l;
     const size_t expected = 1;
 
     // Act
@@ -69,7 +68,7 @@ TEST(list, get_size_after_push_back) {
 // вставка элементов в начало
 TEST(list, insert_begin) {
     // Arrange
-    MyListSingle l;
+    MyListSingle<int> l;
     const size_t expected = 6;
     const int value = 7;
     const size_t pos = 0;
@@ -89,7 +88,7 @@ TEST(list, insert_begin) {
 // вставка элементов в середину
 TEST(list, insert_middle) {
     // Arrange
-    MyListSingle l;
+    MyListSingle<int> l;
     const size_t expected = 6;
     const int value = 7;
     const size_t pos = 3;
@@ -109,7 +108,7 @@ TEST(list, insert_middle) {
 // вставка элементов в конец
 TEST(list, insert_end) {
     // Arrange
-    MyListSingle l;
+    MyListSingle<int> l;
     const size_t expected = 6;
     const int value = 7;
     const size_t pos = 5;
@@ -129,7 +128,7 @@ TEST(list, insert_end) {
 // удаление элементов из конца
 TEST(list, delete_end) {
     // Arrange
-    MyListSingle l;
+    MyListSingle<int> l;
     const size_t expected = 5;
 
     for (size_t i = 0; i < (expected+1); i++) {
@@ -146,7 +145,7 @@ TEST(list, delete_end) {
 // удаление элементов из начала
 TEST(list, delete_begin) {
     // Arrange
-    MyListSingle l;
+    MyListSingle<int> l;
     const size_t expected = 5;
 
     for (size_t i = 0; i < (expected+1); i++) {
@@ -163,7 +162,7 @@ TEST(list, delete_begin) {
 // удаление элементов из середины
 TEST(list, delete_middle) {
     // Arrange
-    MyListSingle l;
+    MyListSingle<int> l;
     const size_t expected = 5;
     const size_t pos = 3;
 
@@ -181,7 +180,7 @@ TEST(list, delete_middle) {
 // копирование контейнера
 TEST(list, copy_constructor) {
     // Arrange
-    MyListSingle l1;
+    MyListSingle<int> l1;
     const size_t sz = 5;
     // MyVector v2(sz);
 
@@ -190,7 +189,7 @@ TEST(list, copy_constructor) {
     }
 
     // Act
-    MyListSingle l2 = l1;
+    MyListSingle<int> l2 = l1;
 
     // Assert
     ASSERT_EQ(l1.size(), l2.size());
@@ -203,12 +202,12 @@ TEST(list, copy_constructor) {
 TEST(list, delete_constructor_empty) {
     EXPECT_NO_THROW({
         // Arrange
-        MyListSingle l;
+        MyListSingle<int> l;
 
         // Act
 
         // Assert
-        // l.~MyListSingle();
+        // l.~MyListSingle<int>();
     });
 }
 
@@ -216,13 +215,13 @@ TEST(list, delete_constructor_empty) {
 TEST(list, delete_constructor_one) {
     EXPECT_NO_THROW({
         // Arrange
-        MyListSingle l;
+        MyListSingle<int> l;
 
         // Act
         l.push_back(7);
 
         // Assert
-        // l.~MyListSingle();
+        // l.~MyListSingle<int>();
     });
 }
 
@@ -230,7 +229,7 @@ TEST(list, delete_constructor_one) {
 TEST(list, delete_constructor_many) {
     EXPECT_NO_THROW({
         // Arrange
-        MyListSingle l;
+        MyListSingle<int> l;
 
         // Act
         l.push_back(1);
@@ -240,7 +239,7 @@ TEST(list, delete_constructor_many) {
         l.push_back(5);
 
         // Assert
-        // l.~MyListSingle();
+        // l.~MyListSingle<int>();
     });
 }
 
@@ -265,23 +264,24 @@ TEST(list, delete_constructor_check_elements) {
     CounterL::counter = 0;
     {
         // Arrange
-        std::list<CounterL> l;
+        MyListSingle<CounterL> l;
 
         // Act
         for (int i = 0; i < expected; i++) {
-            l.emplace_back();
+            l.push_back(CounterL());
         }
 
         // Assert
     }
-    ASSERT_EQ(CounterL::counter, expected);
+    // умножаем на два, т.к. при использовании push_back создаётся временный объект
+    ASSERT_EQ(CounterL::counter, expected * 2);
 }
 
 // перемещение контейнера
 TEST(list, move_assignment) {
     // Arrange
-    MyListSingle l1;
-    MyListSingle l2;
+    MyListSingle<int> l1;
+    MyListSingle<int> l2;
     const int sz = 5;
 
     for (int i = 0; i < sz; i++) {

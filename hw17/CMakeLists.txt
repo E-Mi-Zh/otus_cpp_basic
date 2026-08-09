@@ -13,8 +13,6 @@ add_executable(
     containers_tests
     tests/vector_tests.cpp
     tests/list_tests.cpp
-    src/vector.cpp
-    src/listsingle.cpp
 )
 
 # Add src to the include directories for the test target

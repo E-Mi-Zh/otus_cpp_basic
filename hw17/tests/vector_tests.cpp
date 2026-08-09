@@ -1,6 +1,5 @@
-#include "../src/vector.h"
+#include "../src/vector.hpp"
 #include <gtest/gtest.h>
-#include <vector>
 
 // создание контейнера
 TEST(vector, create) {
@@ -10,7 +9,7 @@ TEST(vector, create) {
 
     // Assert
     EXPECT_NO_THROW({
-        MyVector v;
+        MyVector<int> v;
     });
 
 }
@@ -18,7 +17,7 @@ TEST(vector, create) {
 // получение размера контейнера (фактическое количество элементов)
 TEST(vector, get_size) {
     // Arrange
-    MyVector v;
+    MyVector<int> v;
     const size_t expected = 0;
 
     // Act
@@ -30,7 +29,7 @@ TEST(vector, get_size) {
 // получение элементов из контейнера
 TEST(vector, get_value) {
     // Arrange
-    MyVector v;
+    MyVector<int> v;
     const int value = 7;
 
     // Act
@@ -43,7 +42,7 @@ TEST(vector, get_value) {
 // вставка элементов в конец
 TEST(vector, push_back) {
     // Arrange
-    MyVector v;
+    MyVector<int> v;
     const size_t expected = 1;
 
     // Act
@@ -56,7 +55,7 @@ TEST(vector, push_back) {
 // получение размера контейнера (фактическое количество элементов)
 TEST(vector, get_size_after_push_back) {
     // Arrange
-    MyVector v;
+    MyVector<int> v;
     const size_t expected = 1;
 
     // Act
@@ -70,7 +69,7 @@ TEST(vector, get_size_after_push_back) {
 TEST(vector, insert_begin) {
     // Arrange
     const size_t expected = 6;
-    MyVector v(expected-1);
+    MyVector<int> v(expected-1);
     const int value = 7;
     const size_t pos = 0;
 
@@ -90,7 +89,7 @@ TEST(vector, insert_begin) {
 TEST(vector, insert_middle) {
     // Arrange
     const size_t expected = 6;
-    MyVector v(expected-1);
+    MyVector<int> v(expected-1);
     const int value = 7;
     const size_t pos = 3;
 
@@ -110,7 +109,7 @@ TEST(vector, insert_middle) {
 TEST(vector, insert_end) {
     // Arrange
     const size_t expected = 6;
-    MyVector v(expected-1);
+    MyVector<int> v(expected-1);
     const int value = 7;
     const size_t pos = 5;
 
@@ -130,7 +129,7 @@ TEST(vector, insert_end) {
 TEST(vector, delete_end) {
     // Arrange
     const size_t expected = 5;
-    MyVector v(expected+1);
+    MyVector<int> v(expected+1);
 
     for (size_t i = 0; i < (expected+1); i++) {
         v.push_back(i);
@@ -147,7 +146,7 @@ TEST(vector, delete_end) {
 TEST(vector, delete_begin) {
     // Arrange
     const size_t expected = 5;
-    MyVector v(expected+1);
+    MyVector<int> v(expected+1);
 
     for (size_t i = 0; i < (expected+1); i++) {
         v.push_back(i);
@@ -164,7 +163,7 @@ TEST(vector, delete_begin) {
 TEST(vector, delete_middle) {
     // Arrange
     const size_t expected = 5;
-    MyVector v(expected+1);
+    MyVector<int> v(expected+1);
     const size_t pos = 3;
 
     for (size_t i = 0; i < (expected+1); i++) {
@@ -182,14 +181,14 @@ TEST(vector, delete_middle) {
 TEST(vector, copy_constructor) {
     // Arrange
     const size_t sz = 5;
-    MyVector v1(sz);
+    MyVector<int> v1(sz);
 
     for (size_t i = 0; i < sz; i++) {
         v1.push_back(i);
     }
 
     // Act
-    MyVector v2 = v1;
+    MyVector<int> v2 = v1;
 
     // Assert
     ASSERT_EQ(v1.size(), v2.size());
@@ -202,12 +201,12 @@ TEST(vector, copy_constructor) {
 TEST(vector, delete_constructor_empty) {
     EXPECT_NO_THROW({
         // Arrange
-        MyVector v;
+        MyVector<int> v;
 
         // Act
 
         // Assert
-        // v.~MyVector();
+        // v.~MyVector<int>();
     });
 }
 
@@ -215,13 +214,13 @@ TEST(vector, delete_constructor_empty) {
 TEST(vector, delete_constructor_one) {
     EXPECT_NO_THROW({
         // Arrange
-        MyVector v;
+        MyVector<int> v;
 
         // Act
         v.push_back(7);
 
         // Assert
-        // v.~MyVector();
+        // v.~MyVector<int>();
     });
 }
 
@@ -229,7 +228,7 @@ TEST(vector, delete_constructor_one) {
 TEST(vector, delete_constructor_many) {
     EXPECT_NO_THROW({
         // Arrange
-        MyVector v;
+        MyVector<int> v;
 
         // Act
         v.push_back(1);
@@ -239,7 +238,7 @@ TEST(vector, delete_constructor_many) {
         v.push_back(5);
 
         // Assert
-        // v.~MyVector();
+        // v.~MyVector<int>();
     });
 }
 
@@ -264,24 +263,25 @@ TEST(vector, delete_constructor_check_elements) {
     Counter::counter = 0;
     {
         // Arrange
-        std::vector<Counter> v;
-        v.reserve(expected);
+        MyVector<Counter> v(expected);
 
         // Act
         for (int i = 0; i < expected; i++) {
-            v.emplace_back();
+            v.push_back(Counter());
         }
-
         // Assert
     }
-    ASSERT_EQ(Counter::counter, expected);
+    // В силу особенностей реализации тестируемого класса (преаллокация с коэффициентом)
+    // Фактически деструктор будет вызываться дополнительно для преаллоцированных
+    // элементов
+    ASSERT_EQ(Counter::counter, expected + static_cast<unsigned int>(expected * MY_VECTOR_COEF));
 }
 
 // перемещение контейнера
 TEST(vector, move_assignment) {
     // Arrange
-    MyVector v1;
-    MyVector v2;
+    MyVector<int> v1;
+    MyVector<int> v2;
     const int sz = 5;
 
     for (int i = 0; i < sz; i++) {

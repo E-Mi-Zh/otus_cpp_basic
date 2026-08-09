@@ -1,17 +1,17 @@
-#include "listsingle.h"
-
-MyListSingle::MyListSingle() {
+template<typename T>
+MyListSingle<T>::MyListSingle() {
     this->listsize = 0;
     this->head = nullptr;
     this->tail = nullptr;
 }
 
-MyListSingle::~MyListSingle() {
-    NodeSingle* node = this->tail;
-    NodeSingle* prev_node;
+template<typename T>
+MyListSingle<T>::~MyListSingle() {
+    NodeSingle<T>* node = this->tail;
+    NodeSingle<T>* prev_node;
 
     while (node != nullptr) {
-        node->data = 0;
+        // node->data = 0;
         prev_node = node;
         node = node->next;
         prev_node->next = nullptr;
@@ -24,12 +24,13 @@ MyListSingle::~MyListSingle() {
 }
 
 // Конструктор копирования
-MyListSingle::MyListSingle(const MyListSingle &other) {
+template<typename T>
+MyListSingle<T>::MyListSingle(const MyListSingle<T> &other) {
     this->head = nullptr;
     this->tail = nullptr;
     this->listsize = 0;
 
-    NodeSingle* node = other.tail;
+    NodeSingle<T>* node = other.tail;
 
     while (node != nullptr) {
         this->push_back(node->data);
@@ -38,7 +39,8 @@ MyListSingle::MyListSingle(const MyListSingle &other) {
 }
 
 // Конструктор перемещения
-MyListSingle::MyListSingle(MyListSingle&& other) {
+template<typename T>
+MyListSingle<T>::MyListSingle(MyListSingle<T>&& other) {
     this->head = other.head;
     this->tail = other.tail;
     this->listsize = other.listsize;
@@ -48,14 +50,15 @@ MyListSingle::MyListSingle(MyListSingle&& other) {
 }
 
 // Copy assignment operator
-MyListSingle &MyListSingle::operator=(const MyListSingle &rhs) {
-    MyListSingle temp{rhs};
+template<typename T>
+MyListSingle<T> &MyListSingle<T>::operator=(const MyListSingle<T> &rhs) {
+    MyListSingle<T> temp{rhs};
 
-    NodeSingle* thead = this->head;
+    NodeSingle<T>* thead = this->head;
     this->head = temp.head;
     temp.head = thead;
 
-    NodeSingle* ttail = this->tail;
+    NodeSingle<T>* ttail = this->tail;
     this->tail = temp.tail;
     temp.tail = ttail;
 
@@ -67,9 +70,10 @@ MyListSingle &MyListSingle::operator=(const MyListSingle &rhs) {
 }
 
 // Move assignment operator
-MyListSingle &MyListSingle::operator=(MyListSingle &&rhs) {
-    NodeSingle* node = this->tail;
-    NodeSingle* prev_node;
+template<typename T>
+MyListSingle<T> &MyListSingle<T>::operator=(MyListSingle<T> &&rhs) {
+    NodeSingle<T>* node = this->tail;
+    NodeSingle<T>* prev_node;
 
     if (this != &rhs) {
         while (node != nullptr) {
@@ -89,13 +93,14 @@ MyListSingle &MyListSingle::operator=(MyListSingle &&rhs) {
     return *this;
 }
 
-
-size_t MyListSingle::size() {
+template<typename T>
+size_t MyListSingle<T>::size() {
     return this->listsize;
 }
 
-void MyListSingle::push_back(int value) {
-    NodeSingle* node = new NodeSingle{};    // создание нового узла
+template<typename T>
+void MyListSingle<T>::push_back(T value) {
+    NodeSingle<T>* node = new NodeSingle<T>{};    // создание нового узла
 
     if (this->tail == nullptr) {
         // сохраняем указатель на хвост только для первого вставленного элемента
@@ -109,9 +114,10 @@ void MyListSingle::push_back(int value) {
     this->listsize++;
 }
 
-void MyListSingle::insert(int value, size_t pos) {
-    NodeSingle* node = this->tail;
-    NodeSingle* new_node = new NodeSingle{};
+template<typename T>
+void MyListSingle<T>::insert(T value, size_t pos) {
+    NodeSingle<T>* node = this->tail;
+    NodeSingle<T>* new_node = new NodeSingle<T>{};
     size_t ins_pos = 0;
 
     while ((node != nullptr) && (ins_pos != pos)) {
@@ -141,9 +147,10 @@ void MyListSingle::insert(int value, size_t pos) {
     this->listsize++;
 }
 
-void MyListSingle::erase(size_t pos) {
-    NodeSingle* node = this->tail;
-    NodeSingle* prev_node = this->tail;
+template<typename T>
+void MyListSingle<T>::erase(size_t pos) {
+    NodeSingle<T>* node = this->tail;
+    NodeSingle<T>* prev_node = this->tail;
     size_t del_pos = 0;
 
     if (this->listsize == 0) {
@@ -180,8 +187,9 @@ void MyListSingle::erase(size_t pos) {
     this->listsize--;
 }
 
-int MyListSingle::get(size_t pos) {
-    NodeSingle* node;
+template<typename T>
+T MyListSingle<T>::get(size_t pos) {
+    NodeSingle<T>* node;
     size_t cur_pos = 0;
 
     node = this->tail;
@@ -195,16 +203,19 @@ int MyListSingle::get(size_t pos) {
     return this->head->data;
 }
 
-NodeSingle* MyListSingle::list_head(){
+template<typename T>
+NodeSingle<T>* MyListSingle<T>::list_head(){
     return this->head;
 }
 
-NodeSingle* MyListSingle::list_tail(){
+template<typename T>
+NodeSingle<T>* MyListSingle<T>::list_tail(){
     return this->tail;
 }
 
-std::ostream &operator<<(std::ostream &os, MyListSingle& list) {
-    NodeSingle* node = list.list_tail();
+template<typename T>
+std::ostream &operator<<(std::ostream &os, MyListSingle<T>& list) {
+    NodeSingle<T>* node = list.list_tail();
 
     while (node != nullptr) {
         os << node->data;
@@ -218,19 +229,23 @@ std::ostream &operator<<(std::ostream &os, MyListSingle& list) {
     return os;
 }
 
-MyListSingle::iterator::iterator(NodeSingle* ptr) {
+template<typename T>
+MyListSingle<T>::iterator::iterator(NodeSingle<T>* ptr) {
     this->cur = ptr;
 }
 
-MyListSingle::iterator MyListSingle::begin() {
+template<typename T>
+typename MyListSingle<T>::iterator MyListSingle<T>::begin() {
     return iterator(this->tail);
 }
 
-MyListSingle::iterator MyListSingle::end() {
+template<typename T>
+typename MyListSingle<T>::iterator MyListSingle<T>::end() {
     return iterator(nullptr);
 }
 
-int &MyListSingle::iterator::operator*() {
+template<typename T>
+T &MyListSingle<T>::iterator::operator*() {
     if (this->cur == nullptr) {
         std::cout << "Ошибка при работе с итератором: доступ по нулевому указателю!" << std::endl;
         std::cout << "Завершаем программу!" << std::endl;
@@ -240,7 +255,8 @@ int &MyListSingle::iterator::operator*() {
     }
 }
 
-int MyListSingle::iterator::get() {
+template<typename T>
+T MyListSingle<T>::iterator::get() {
     if (this->cur == nullptr) {
         std::cout << "Ошибка при работе с итератором: доступ по нулевому указателю!" << std::endl;
         std::cout << "Возвращаем ноль!" << std::endl;
@@ -249,15 +265,20 @@ int MyListSingle::iterator::get() {
         return this->cur->data;
     }
 }
-MyListSingle::iterator &MyListSingle::iterator::operator++() {
+
+template<typename T>
+typename MyListSingle<T>::iterator &MyListSingle<T>::iterator::operator++() {
     this->cur = this->cur->next;
 
     return *this;
 }
 
-bool MyListSingle::iterator::operator!=(const iterator &other) {
+template<typename T>
+bool MyListSingle<T>::iterator::operator!=(const iterator &other) {
     return this->cur != other.cur;
 }
-bool MyListSingle::iterator::operator==(const iterator &other) {
+
+template<typename T>
+bool MyListSingle<T>::iterator::operator==(const iterator &other) {
     return this->cur == other.cur;
 }

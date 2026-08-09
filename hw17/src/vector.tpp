@@ -1,14 +1,13 @@
-#include "vector.h"
-#include <iostream>
-
-MyVector::MyVector(size_t size) {
-    this->data = new int[static_cast<unsigned int>(size * MY_VECTOR_COEF)];
+template<typename T>
+MyVector<T>::MyVector(size_t size) {
     this->vec_size = size;
-    this->capacity = size * MY_VECTOR_COEF;
+    this->capacity = static_cast<unsigned int>(size * MY_VECTOR_COEF);
+    this->data = new T[capacity];
     this->pos = 0;
 }
 
-MyVector::~MyVector() {
+template<typename T>
+MyVector<T>::~MyVector() {
     this->vec_size = 0;
     this->capacity = 0;
     this->pos = 0;
@@ -16,11 +15,12 @@ MyVector::~MyVector() {
 }
 
 // Конструктор копирования
-MyVector::MyVector(const MyVector &other) {
+template<typename T>
+MyVector<T>::MyVector(const MyVector &other) {
     this->vec_size = other.vec_size;
     this->capacity = other.capacity;
     this->pos = other.pos;
-    this->data = new int[this->capacity];
+    this->data = new T[this->capacity];
 
     for (size_t i = 0; i < this->pos; i++) {
         this->data[i] = other.data[i];
@@ -28,7 +28,8 @@ MyVector::MyVector(const MyVector &other) {
 }
 
 // Конструктор перемещения
-MyVector::MyVector(MyVector&& other) {
+template<typename T>
+MyVector<T>::MyVector(MyVector<T>&& other) {
     this->data = other.data;
     this->vec_size = other.vec_size;
     this->capacity = other.capacity;
@@ -40,10 +41,11 @@ MyVector::MyVector(MyVector&& other) {
 }
 
 // Copy assignment operator
-MyVector &MyVector::operator=(const MyVector &rhs) {
-    MyVector temp{rhs};
+template<typename T>
+MyVector<T> &MyVector<T>::operator=(const MyVector<T> &rhs) {
+    MyVector<T> temp{rhs};
 
-    int* tdata = this->data;
+    T* tdata = this->data;
     this->data = temp.data;
     temp.data = tdata;
 
@@ -63,7 +65,8 @@ MyVector &MyVector::operator=(const MyVector &rhs) {
 }
 
 // Move assignment operator
-MyVector &MyVector::operator=(MyVector &&rhs) {
+template<typename T>
+MyVector<T> &MyVector<T>::operator=(MyVector<T> &&rhs) {
     if (this != &rhs) {
         delete [] this->data;
         this->data = rhs.data;
@@ -79,16 +82,19 @@ MyVector &MyVector::operator=(MyVector &&rhs) {
     return *this;
 }
 
-size_t MyVector::size() {
+template<typename T>
+size_t MyVector<T>::size() {
     return this->pos;
 }
 
-void MyVector::push_back(int value) {
+template<typename T>
+void MyVector<T>::push_back(T value) {
     // Если текущая позиция для вставки подошла к границе доступной памяти
     // увеличиваем вектор с учётом коэффициента расширения
     if (this->pos == this->capacity) {
+        std::cout << "realloc!\n";
         this->capacity = static_cast<size_t>(this->capacity * MY_VECTOR_COEF);
-        int* new_region = new int[this->capacity];      // новая область памяти
+        T* new_region = new T[this->capacity];      // новая область памяти
         for (size_t i = 0; i < this->pos; i++) {
             new_region[i] = this->data[i];              // копирование элементов
         }
@@ -100,7 +106,8 @@ void MyVector::push_back(int value) {
     this->vec_size++;
 }
 
-void MyVector::insert(int value, size_t pos) {
+template<typename T>
+void MyVector<T>::insert(T value, size_t pos) {
     // В векторе ещё не было ни одного элемента, просто добавляем новый в конец
     if (this->pos == 0) {
         this->push_back(value);
@@ -114,7 +121,7 @@ void MyVector::insert(int value, size_t pos) {
 
     if (this->pos == this->capacity) {
         this->capacity = static_cast<size_t>(this->capacity * MY_VECTOR_COEF);
-        int* new_region = new int[this->capacity];      // новая область памяти
+        T* new_region = new T[this->capacity];      // новая область памяти
         for (size_t i = 0; i < this->pos; i++) {
             new_region[i] = this->data[i];              // копирование элементов
         }
@@ -134,7 +141,8 @@ void MyVector::insert(int value, size_t pos) {
     this->pos++;
 }
 
-void MyVector::erase(size_t pos) {
+template<typename T>
+void MyVector<T>::erase(size_t pos) {
     // Пропускаем все элементы до удаляемой позиции
     // Затем идём от искомого индекса и до конца, меняя местами
     // текущий элемент и следующий
@@ -145,11 +153,13 @@ void MyVector::erase(size_t pos) {
     this->pos--;
 }
 
-int MyVector::get(size_t pos) {
+template<typename T>
+T MyVector<T>::get(size_t pos) {
     return this->data[pos];
 }
 
-std::ostream &operator<<(std::ostream &os, MyVector& vec) {
+template<typename T>
+std::ostream &operator<<(std::ostream &os, MyVector<T>& vec) {
     size_t i;
     if (vec.size() == 0) {
         // в пустом контейнере печатать нечего
@@ -162,35 +172,44 @@ std::ostream &operator<<(std::ostream &os, MyVector& vec) {
     return os;
 }
 
-
-MyVector::iterator::iterator(int* ptr) {
+template<typename T>
+MyVector<T>::iterator::iterator(T* ptr) {
     this->cur = ptr;
 }
 
-MyVector::iterator MyVector::begin() {
+template<typename T>
+typename MyVector<T>::iterator MyVector<T>::begin() {
   return iterator(this->data);
 }
 
-MyVector::iterator MyVector::end() {
+template<typename T>
+typename MyVector<T>::iterator MyVector<T>::end() {
   return iterator(this->data + this->pos);
 }
 
-int &MyVector::iterator::operator*() {
+template<typename T>
+T &MyVector<T>::iterator::operator*() {
     return *(this->cur);
 }
 
-int MyVector::iterator::get() {
+template<typename T>
+T MyVector<T>::iterator::get() {
     return *(this->cur);
 }
-MyVector::iterator &MyVector::iterator::operator++() {
+
+template<typename T>
+typename MyVector<T>::iterator &MyVector<T>::iterator::operator++() {
     this->cur++;
 
     return *this;
 }
 
-bool MyVector::iterator::operator!=(const iterator &other) {
+template<typename T>
+bool MyVector<T>::iterator::operator!=(const iterator &other) {
     return this->cur != other.cur;
 }
-bool MyVector::iterator::operator==(const iterator &other) {
+
+template<typename T>
+bool MyVector<T>::iterator::operator==(const iterator &other) {
     return this->cur == other.cur;
 }
