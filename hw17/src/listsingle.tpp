@@ -1,13 +1,13 @@
 template<typename T>
 MyListSingle<T>::MyListSingle() {
     this->listsize = 0;
-    this->head = nullptr;
     this->tail = nullptr;
+    this->head = nullptr;
 }
 
 template<typename T>
 MyListSingle<T>::~MyListSingle() {
-    NodeSingle<T>* node = this->tail;
+    NodeSingle<T>* node = this->head;
     NodeSingle<T>* prev_node;
 
     while (node != nullptr) {
@@ -18,18 +18,18 @@ MyListSingle<T>::~MyListSingle() {
     }
 
     this->listsize = 0;
-    this->head = nullptr;
     this->tail = nullptr;
+    this->head = nullptr;
 }
 
 // Конструктор копирования
 template<typename T>
 MyListSingle<T>::MyListSingle(const MyListSingle<T> &other) {
-    this->head = nullptr;
     this->tail = nullptr;
+    this->head = nullptr;
     this->listsize = 0;
 
-    NodeSingle<T>* node = other.tail;
+    NodeSingle<T>* node = other.head;
 
     while (node != nullptr) {
         this->push_back(node->data);
@@ -40,11 +40,11 @@ MyListSingle<T>::MyListSingle(const MyListSingle<T> &other) {
 // Конструктор перемещения
 template<typename T>
 MyListSingle<T>::MyListSingle(MyListSingle<T>&& other) {
-    this->head = other.head;
     this->tail = other.tail;
+    this->head = other.head;
     this->listsize = other.listsize;
-    other.head = nullptr;
     other.tail = nullptr;
+    other.head = nullptr;
     other.listsize = 0;
 }
 
@@ -53,8 +53,8 @@ template<typename T>
 MyListSingle<T> &MyListSingle<T>::operator=(const MyListSingle<T> &rhs) {
     MyListSingle<T> temp{rhs};
 
-    std::swap(this->head, temp.head);
     std::swap(this->tail, temp.tail);
+    std::swap(this->head, temp.head);
     std::swap(this->listsize, temp.listsize);
 
     return *this;
@@ -63,7 +63,7 @@ MyListSingle<T> &MyListSingle<T>::operator=(const MyListSingle<T> &rhs) {
 // Move assignment operator
 template<typename T>
 MyListSingle<T> &MyListSingle<T>::operator=(MyListSingle<T> &&rhs) {
-    NodeSingle<T>* node = this->tail;
+    NodeSingle<T>* node = this->head;
     NodeSingle<T>* prev_node;
 
     if (this != &rhs) {
@@ -73,12 +73,12 @@ MyListSingle<T> &MyListSingle<T>::operator=(MyListSingle<T> &&rhs) {
             delete prev_node;
         }
 
-        this->head = rhs.head;
         this->tail = rhs.tail;
+        this->head = rhs.head;
         this->listsize = rhs.listsize;
 
-        rhs.head = nullptr;
         rhs.tail = nullptr;
+        rhs.head = nullptr;
         rhs.listsize = 0;
     }
     return *this;
@@ -93,13 +93,13 @@ template<typename T>
 void MyListSingle<T>::push_back(T value) {
     NodeSingle<T>* node = new NodeSingle<T>{};    // создание нового узла
 
-    if (this->tail == nullptr) {
+    if (this->head == nullptr) {
         // сохраняем указатель на хвост только для первого вставленного элемента
+        this->head = node;
         this->tail = node;
-        this->head = node;
     } else {
-        this->head->next = node;
-        this->head = node;
+        this->tail->next = node;
+        this->tail = node;
     }
     node->data = value;
     this->listsize++;
@@ -107,7 +107,7 @@ void MyListSingle<T>::push_back(T value) {
 
 template<typename T>
 void MyListSingle<T>::insert(T value, size_t pos) {
-    NodeSingle<T>* node = this->tail;
+    NodeSingle<T>* node = this->head;
     NodeSingle<T>* new_node = new NodeSingle<T>{};
     size_t ins_pos = 0;
 
@@ -120,8 +120,8 @@ void MyListSingle<T>::insert(T value, size_t pos) {
         // вставляем в самый конец
         new_node->data = value;
         new_node->next = nullptr;
-        this->head->next = new_node;
-        this->head = new_node;
+        this->tail->next = new_node;
+        this->tail = new_node;
     } else {
         // Нам надо вставить новый элемент перед существующим
         // ссылки на предыдущий у нас нет
@@ -131,8 +131,8 @@ void MyListSingle<T>::insert(T value, size_t pos) {
         new_node->next = node->next;
         node->data = value;
         node->next = new_node;
-        if (this->head == node) {
-            this->head = new_node;
+        if (this->tail == node) {
+            this->tail = new_node;
         }
     }
     this->listsize++;
@@ -140,8 +140,8 @@ void MyListSingle<T>::insert(T value, size_t pos) {
 
 template<typename T>
 void MyListSingle<T>::erase(size_t pos) {
-    NodeSingle<T>* node = this->tail;
-    NodeSingle<T>* prev_node = this->tail;
+    NodeSingle<T>* node = this->head;
+    NodeSingle<T>* prev_node = this->head;
     size_t del_pos = 0;
 
     if (this->listsize == 0) {
@@ -158,14 +158,14 @@ void MyListSingle<T>::erase(size_t pos) {
         del_pos++;
     }
 
-    if (node == this->head) {
-        this->head = prev_node;
-        this->head->next = nullptr;
+    if (node == this->tail) {
+        this->tail = prev_node;
+        this->tail->next = nullptr;
     } else {
         prev_node->next = node->next;
     }
-    if (node == this->tail) {
-        this->tail = node->next;
+    if (node == this->head) {
+        this->head = node->next;
     }
     node->next = nullptr;
     delete node;
@@ -177,7 +177,7 @@ T MyListSingle<T>::get(size_t pos) {
     NodeSingle<T>* node;
     size_t cur_pos = 0;
 
-    node = this->tail;
+    node = this->head;
     while (node != nullptr) {
         if (cur_pos == pos) {
             return node->data;
@@ -185,17 +185,17 @@ T MyListSingle<T>::get(size_t pos) {
         node = node->next;
         cur_pos++;
     }
-    return this->head->data;
+    return this->tail->data;
 }
 
 template<typename T>
 NodeSingle<T>* MyListSingle<T>::list_head(){
-    return this->head;
+    return this->tail;
 }
 
 template<typename T>
 NodeSingle<T>* MyListSingle<T>::list_tail(){
-    return this->tail;
+    return this->head;
 }
 
 template<typename T>
@@ -221,7 +221,7 @@ MyListSingle<T>::iterator::iterator(NodeSingle<T>* ptr) {
 
 template<typename T>
 typename MyListSingle<T>::iterator MyListSingle<T>::begin() {
-    return iterator(this->tail);
+    return iterator(this->head);
 }
 
 template<typename T>
