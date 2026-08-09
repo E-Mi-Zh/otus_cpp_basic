@@ -109,33 +109,38 @@ template<typename T>
 void MyListSingle<T>::insert(T value, size_t pos) {
     NodeSingle<T>* node = this->head;
     NodeSingle<T>* new_node = new NodeSingle<T>{};
+    NodeSingle<T>* prev_node = node;
     size_t ins_pos = 0;
 
+    new_node->data = value;
+    this->listsize++;
+
+    // вставляем в начало
+    if (pos == 0) {
+        new_node->next = this->head;
+        this->head = new_node;
+        return;
+    }
+
     while ((node != nullptr) && (ins_pos != pos)) {
+        prev_node = node;
         node = node->next;
         ins_pos++;
     }
 
     if (node == nullptr) {
         // вставляем в самый конец
-        new_node->data = value;
         new_node->next = nullptr;
         this->tail->next = new_node;
         this->tail = new_node;
     } else {
-        // Нам надо вставить новый элемент перед существующим
-        // ссылки на предыдущий у нас нет
-        // делаем финт: копируем в новый элемент существующий
-        // а в текущий записываем искомое значение
-        new_node->data = node->data;
-        new_node->next = node->next;
-        node->data = value;
-        node->next = new_node;
-        if (this->tail == node) {
-            this->tail = new_node;
+        // вставляем новый элемент перед существующим
+        prev_node->next = new_node;
+        new_node->next = node;
+        if (this->head == node) {
+            this->head = new_node;
         }
     }
-    this->listsize++;
 }
 
 template<typename T>
