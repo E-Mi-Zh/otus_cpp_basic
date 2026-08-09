@@ -11,7 +11,6 @@ MyListSingle<T>::~MyListSingle() {
     NodeSingle<T>* prev_node;
 
     while (node != nullptr) {
-        // node->data = 0;
         prev_node = node;
         node = node->next;
         prev_node->next = nullptr;
@@ -54,17 +53,9 @@ template<typename T>
 MyListSingle<T> &MyListSingle<T>::operator=(const MyListSingle<T> &rhs) {
     MyListSingle<T> temp{rhs};
 
-    NodeSingle<T>* thead = this->head;
-    this->head = temp.head;
-    temp.head = thead;
-
-    NodeSingle<T>* ttail = this->tail;
-    this->tail = temp.tail;
-    temp.tail = ttail;
-
-    size_t tlistsize = this->listsize;
-    this->listsize = temp.listsize;
-    temp.listsize = tlistsize;
+    std::swap(this->head, temp.head);
+    std::swap(this->tail, temp.tail);
+    std::swap(this->listsize, temp.listsize);
 
     return *this;
 }
@@ -161,25 +152,19 @@ void MyListSingle<T>::erase(size_t pos) {
     if (pos > (this->listsize - 1)) {
         pos = this->listsize - 1;
     }
-    // std::cout << "listsize=" << this->listsize << " tail" << this->tail << " head" << this->head << std::endl;
-    // while ((node->next != nullptr) && (del_pos != pos)) {
     while ((node != nullptr) && (del_pos != pos)) {
-        // std::cout << "before del_pos=" << del_pos << " pos=" << pos << " data=" << node->data << " prev_node" << prev_node << " node" << node << " node.next" << node->next << std::endl;
         prev_node = node;
         node = node->next;
         del_pos++;
-        // std::cout << "after del_pos=" << del_pos << " pos=" << pos << " data=" << node->data << " prev_node" << prev_node << " node" << node << " node.next" << node->next << std::endl;
     }
 
     if (node == this->head) {
-        // std::cout << "head!" << std::endl;
         this->head = prev_node;
         this->head->next = nullptr;
     } else {
         prev_node->next = node->next;
     }
     if (node == this->tail) {
-        // std::cout << "tail!" << std::endl;
         this->tail = node->next;
     }
     node->next = nullptr;

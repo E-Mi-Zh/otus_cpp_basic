@@ -45,24 +45,14 @@ template<typename T>
 MyVector<T> &MyVector<T>::operator=(const MyVector<T> &rhs) {
     MyVector<T> temp{rhs};
 
-    T* tdata = this->data;
-    this->data = temp.data;
-    temp.data = tdata;
-
-    size_t tvec_size = this->vec_size;
-    this->vec_size = temp.vec_size;
-    temp.vec_size = tvec_size;
-
-    size_t tcapacity = this->capacity;
-    this->capacity = temp.capacity;
-    temp.capacity = tcapacity;
-
-    size_t tpos = this->pos;
-    this->pos = temp.pos;
-    temp.pos = tpos;
+    std::swap(this->data, temp.data);
+    std::swap(this->vec_size, temp.vec_size);
+    std::swap(this->capacity, temp.capacity);
+    std::swap(this->pos, temp.pos);
 
     return *this;
 }
+
 
 // Move assignment operator
 template<typename T>
