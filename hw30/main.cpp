@@ -128,8 +128,11 @@ std::vector<char> hack(const std::vector<char>& original,
     sum_res = sum_res + crc_res[i];
   }
   std::cout << "sum_res = " << sum_res << std::endl;
-exit(0);
+
   n_threads = min_threads;
+
+  from = 0;
+  to = batch_size;
 
   for (i = 0; i < n_threads; i++) {
     threads[i] = std::thread(try_hack, i, result, from, to, originalCrc32, &results[i]);
