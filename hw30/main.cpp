@@ -17,18 +17,22 @@ void try_hack(unsigned int batch, std::vector<char> data, size_t from,
               std::vector<char>* result) {
   std::cout << "from = " << from << " to = " << to << std::endl;
 
-  /*
-   * Внимание: код ниже крайне не оптимален.
-   * В качестве доп. задания устраните избыточные вычисления
-   */
+  /* Вычисляем CRC32 от неизменяемой части */
+  auto prefixCrc32 = crc32(data.data(), data.size() - 4);
+  /* В цикле будем считать CRC32 только для изменяемого хвоста*/
+  std::vector<char> value(4);
+
   for (size_t i = from; i < to; ++i) {
     // Заменяем последние четыре байта на значение i
-    replaceLastFourBytes(data, uint32_t(i));
+    replaceLastFourBytes(value, uint32_t(i));
     // Вычисляем CRC32 текущего вектора result
-    auto currentCrc32 = crc32(data.data(), data.size());
+    // auto currentCrc32 = crc32(data.data(), data.size());
+
+    auto currentCrc32 = crc32(value.data(), value.size(), ~prefixCrc32);
 
     if (currentCrc32 == originalCrc32) {
       std::cout << "Success\n";
+      replaceLastFourBytes(data, uint32_t(i));
       *result = data;
       return;
     }
@@ -36,7 +40,7 @@ void try_hack(unsigned int batch, std::vector<char> data, size_t from,
     if (i % 1000 == 0) {
       std::cout << "batch " << batch << " progress: "
                 << static_cast<double>(i) / static_cast<double>(to)
-                << std::endl;
+                << "\n";
     }
   }
 }
