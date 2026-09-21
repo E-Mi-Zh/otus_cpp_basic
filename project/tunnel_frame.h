@@ -11,8 +11,6 @@
 // magic чтобы видеть в отладке и дампах
 const uint8_t FRAME_MAGIC_0 = 0xAB;
 const uint8_t FRAME_MAGIC_1 = 0xCD;
-const uint8_t FRAME_VERSION = 0x01;
-const uint8_t FRAME_TYPE_DATA = 0x01;
 
 struct frame_header_s {
     uint8_t magic0;
