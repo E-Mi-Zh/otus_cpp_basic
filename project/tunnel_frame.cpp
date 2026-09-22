@@ -96,10 +96,6 @@ bool frame_parser::pull_ready()
             return true;
         }
 
-        // std::vector<uint8_t> frame(this->tail.begin(), this->tail.begin() + need);
-        // this->ready.push_back(frame);
-        // this->tail.erase(this->tail.begin(), this->tail.begin() + need);
-
         std::vector<uint8_t> frame;
         for (size_t i = 0; i < need; i++) {
             frame.push_back(this->tail[i]);
