@@ -3,6 +3,7 @@
 #include <cstddef>      // size_t
 #include <cstdint>      // uint8_t
 #include <vector>
+#include <string>
 
 #include "tunnel_frame.h"
 
@@ -63,5 +64,42 @@ private:
     std::vector<uint8_t> stash;
     // собираемый кадр (когда находимся в WAIT_FRAME)
     std::vector<uint8_t> frame_acc;
+    frame_parser parser;
+};
+
+// Сколько символов Base64 класть в одну строку PRIVMSG
+#define IRC_B64_CHUNK 400
+#define IRC_LINE_MAX 8192
+
+// Эмуляция IRC: кадр отправляется строками PRIVMSG, не байтами
+// Конец кадра - поле total в frag/total
+class irc_codec : public i_codec {
+public:
+    irc_codec();
+    const char* name() const override;
+    // Кодирует кадр в одну или несколько строк PRIVMSG (через \r\n).
+    bool encode(const uint8_t* frame, size_t frame_len, std::vector<uint8_t>& out) override;
+    // Собирает принятые байты (символы) в буфер
+    bool decode(const uint8_t* data, size_t data_len) override;
+    // Отдаёт чистый кадр в TUN
+    bool pop_frame(std::vector<uint8_t>& frame) override;
+private:
+    // сбрасываем сборку кадра
+    void reset_asm();
+    // обрабатываем строку (парсим)
+    void take_line(const std::string& line);
+    // номер следующего кадра
+    int next_seq;
+    // строка где копим символы до \r\n
+    std::string line_acc;
+    // текущий сегмент
+    int cur_seq; // -1, если кадра в сборке нет
+    // сколько всего будет
+    int cur_total;
+    // сколько пришло
+    int cur_got;
+    // фрагменты Base64
+    std::vector<std::string> parts;
+    bool fatal;
     frame_parser parser;
 };

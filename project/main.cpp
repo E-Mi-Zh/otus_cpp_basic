@@ -311,6 +311,15 @@ void pump_in(tun_device* tun, tcp_link* link, i_codec* dec)
     }
 }
 
+// Поток С - раз в пять секунд печатает счётчики
+void report_stats()
+{
+    while (running) {
+        std::this_thread::sleep_for(std::chrono::seconds(5));
+        std::cout << "tx " << tx_packets << " packets / " << tx_bytes << " bytes, rx " << rx_packets << " packets / " << rx_bytes << " bytes" << std::endl; // полезная нагрузка, не провод
+    }
+}
+
 // Печатаем аргументы
 void print_args()
 {
@@ -374,8 +383,11 @@ int main(int argc, char** argv)
     std::thread out_thread(pump_out, &tun, &link, enc);
     // поток декодер
     std::thread in_thread(pump_in, &tun, &link, dec);
+    // отдельный поток печатает счётчики
+    std::thread stats_thread(report_stats);
     out_thread.join();
     in_thread.join();
+    stats_thread.join();
     delete enc;
     delete dec;
 
