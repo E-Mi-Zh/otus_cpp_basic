@@ -7,7 +7,7 @@
 #include <thread>
 
 #include "tunnel_frame.h"           // pack_frame
-#include "codec.h"                  // i_codec, identity, padding
+#include "codec.h"                  // i_codec, identity, padding, irc
 #include "tun_device.h"
 #include "tcp_link.h"               // сокет после TUN
 
@@ -18,7 +18,7 @@ struct run_args {
     int port;
     std::string tun;                    // имя туннельного интерфейса
     std::string addr;                   // адрес на туннельном интерфейсе - CIDR, например 10.0.0.1/24
-    std::string plugin;                 // плагин - identity, padding
+    std::string plugin;                 // плагин - identity, padding, irc
     bool got_port;
 };
 
@@ -36,7 +36,7 @@ void print_usage()
     std::cout << "  --port <n>" << std::endl;
     std::cout << "  --tun <name>" << std::endl;
     std::cout << "  --addr <cidr>" << std::endl;
-    std::cout << "  --plugin identity|padding" << std::endl;
+    std::cout << "  --plugin identity|padding|irc" << std::endl;
     std::cout << "Same --plugin on both sides. There is no handshake." << std::endl;
 }
 
@@ -159,8 +159,8 @@ int process_args(int argc, char** argv)
         return -1;
     }
 
-    if ((args.plugin != "identity") && (args.plugin != "padding")) {
-        std::cout << "Wrong usage: --plugin must be identity or padding" << std::endl;
+    if ((args.plugin != "identity") && (args.plugin != "padding") && (args.plugin != "irc")) {
+        std::cout << "Wrong usage: --plugin must be identity, padding or irc" << std::endl;
         return -1;
     }
 
@@ -196,7 +196,13 @@ bool make_codecs(i_codec*& enc, i_codec*& dec)
         return true;
     }
 
-    std::cout << "Wrong usage: --plugin must be identity or padding" << std::endl;
+    if (args.plugin == "irc") {
+        enc = new irc_codec{};
+        dec = new irc_codec{};
+        return true;
+    }
+
+    std::cout << "Wrong usage: --plugin must be identity, padding or irc" << std::endl;
 
     return false;
 }
