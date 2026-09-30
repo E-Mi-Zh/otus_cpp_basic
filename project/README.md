@@ -260,22 +260,28 @@ netns wsc, клиент             хост, сервер
 
 ## Структура проекта
 
-| Файл                             | Роль                                        |
-| -------------------------------- | ------------------------------------------- |
-| main.cpp                         | разбор argv, два кодека, три потока         |
-| tunnel_frame.h, tunnel_frame.cpp | сборка кадра и потоковый frame_parser       |
-| codec.h                          | интерфейс i_codec и объявления трёх кодеков |
-| identity_codec.cpp               | кадр уходит в TCP как есть                  |
-| padding_codec.cpp                | случайный паддинг перед кадром              |
-| irc_codec.cpp                    | кадр как строки PRIVMSG                     |
-| base64.h, base64.cpp             | Base64 для IRC-кодека                       |
-| tun_device.h, tun_device.cpp     | /dev/net/tun, адрес и up через ip           |
-| tcp_link.h, tcp_link.cpp         | listen/accept и connect, send/recv          |
-| tests/                           | gtest: кадр, identity, padding, base64, irc |
-| lab_up.sh, lab_down.sh           | пространство wsc и пара veth                |
-| nat_up.sh, nat_down.sh           | форвардинг, NAT, маршрут по умолчанию       |
-| CMakeLists.txt                   | бинарники waystation и waystation_tests     |
-| googletest/                      | Google Test через add_subdirectory          |
+| Файл                                     | Роль                                        |
+| ---------------------------------------- | ------------------------------------------- |
+| [main.cpp](main.cpp)                     | разбор argv, два кодека, три потока         |
+| [tunnel_frame.h](tunnel_frame.h)         | сборка кадра и потоковый frame_parser       |
+| [tunnel_frame.cpp](tunnel_frame.cpp)     |                                             |
+| [codec.h](codec.h)                       | интерфейс i_codec и объявления трёх кодеков |
+| [identity_codec.cpp](identity_codec.cpp) | кадр уходит в TCP как есть                  |
+| [padding_codec.cpp ](padding_codec.cpp ) | случайный паддинг перед кадром              |
+| [irc_codec.cpp](irc_codec.cpp)           | кадр как строки PRIVMSG                     |
+| [base64.h](base64.h),                    | Base64 для IRC-кодека                       |
+| [base64.cpp](base64.cpp)                 |                                             |
+| [tun_device.h](tun_device.h),            | /dev/net/tun, адрес и up через ip           |
+| [tun_device.cpp](tun_device.cpp)         |                                             |
+| [tcp_link.h](tcp_link.h),                | listen/accept и connect, send/recv          |
+| [tcp_link.cpp](tcp_link.cpp)             |                                             |
+| [tests/](tests/)                         | gtest: кадр, identity, padding, base64, irc |
+| [lab_up.sh](lab_up.sh),                  | пространство wsc и пара veth                |
+| [lab_down.sh](lab_down.sh)               |                                             |
+| [nat_up.sh](nat_up.sh),                  | форвардинг, NAT, маршрут по умолчанию       |
+| [nat_down.sh](nat_down.sh)               |                                             |
+| [CMakeLists.txt](CMakeLists.txt)         | бинарники waystation и waystation_tests     |
+| [googletest/](googletest/)               | Google Test через add_subdirectory          |
 
 Проект собирается по стандарту C++17 с флагами `-Wall -Wextra -Wpedantic`.
 
