@@ -5,6 +5,7 @@
 #include <cstdlib>              // srand
 #include <ctime>                // time
 #include <thread>
+#include <atomic>               // std::atomic
 
 #include "tunnel_frame.h"           // pack_frame
 #include "codec.h"                  // i_codec, identity, padding, irc
@@ -170,14 +171,14 @@ int process_args(int argc, char** argv)
 // Счётчики
 // Сколько IP-пакетов ушло в TCP
 // Пишет только поток A, второй поток его не трогает
-unsigned long tx_packets = 0;
+std::atomic<unsigned long> tx_packets{0};
 // Байты payload
-unsigned long tx_bytes = 0;
-bool running = true;
+std::atomic<unsigned long> tx_bytes{0};
+std::atomic<bool> running{true};
 // Сколько IP-пакетов записали в TUN, пишет только поток B.
-unsigned long rx_packets = 0;
+std::atomic<unsigned long> rx_packets{0};
 // Байты payload, которые ушли в TUN
-unsigned long rx_bytes = 0;
+std::atomic<unsigned long> rx_bytes{0};
 
 // создаём объекты для отправки и приёма
 bool make_codecs(std::unique_ptr<i_codec>& enc, std::unique_ptr<i_codec>& dec)
