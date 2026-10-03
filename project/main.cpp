@@ -133,13 +133,13 @@ int process_args(int argc, char** argv)
         return -1;
     }
 
-    if (args.mode != "client" && args.mode != "server") {
+    if ((args.mode != "client") && (args.mode != "server")) {
         std::cout << "Wrong usage: --mode must be client or server" << std::endl;
         return -1;
     }
 
     // клиент без адреса сервера
-    if (args.mode == "client" && args.host.size() == 0) { 
+    if ((args.mode == "client") && (args.host.size() == 0)) { 
         std::cout << "Wrong usage: --mode client requires --host" << std::endl;
         return -1;
     }

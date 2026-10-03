@@ -10,7 +10,7 @@ const char* identity_codec::name() const
 // Копирует кадр в выход как есть.
 bool identity_codec::encode(const uint8_t* frame, size_t frame_len, std::vector<uint8_t>& out)
 {
-    if ((frame == 0) && (frame_len != 0)) {
+    if ((frame == nullptr) && (frame_len != 0)) {
         std::cout << "identity encode: null frame" << std::endl;
         return false;
     }

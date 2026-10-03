@@ -21,7 +21,7 @@ const char* padding_codec::name() const
 // пишет длину N, N случайных байт и затем кадр
 bool padding_codec::encode(const uint8_t* frame, size_t frame_len, std::vector<uint8_t>& out)
 {
-    if ((frame == 0) && (frame_len != 0)) {
+    if ((frame == nullptr) && (frame_len != 0)) {
         std::cout << "padding encode: null frame" << std::endl;
         return false;
     }

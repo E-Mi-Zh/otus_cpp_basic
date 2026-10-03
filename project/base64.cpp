@@ -37,7 +37,7 @@ int b64_val(char c)
 // На выходе нет \r и \n, строку IRC можно резать по ним
 bool base64_encode(const uint8_t* in, size_t len, std::string& out)
 {
-    if ((in == 0) && (len != 0)) {
+    if ((in == nullptr) && (len != 0)) {
         std::cout << "base64 encode: null" << std::endl;
         return false;
     }

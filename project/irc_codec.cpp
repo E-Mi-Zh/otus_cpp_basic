@@ -94,7 +94,7 @@ void irc_codec::reset_asm()
 // Кодируем кадр в строки PRIVMSG по IRC_B64_CHUNK символов в Base64
 bool irc_codec::encode(const uint8_t* frame, size_t frame_len, std::vector<uint8_t>& out)
 {
-    if (frame == 0 && frame_len != 0) {
+    if ((frame == nullptr) && (frame_len != 0)) {
         std::cout << "irc encode: null frame" << std::endl;
         return false;
     }
@@ -243,7 +243,7 @@ void irc_codec::take_line(const std::string& line)
 // набираем байты до \r\n
 bool irc_codec::decode(const uint8_t* data, size_t data_len)
 {
-    if ((data == 0) && (data_len != 0)) {
+    if ((data == nullptr) && (data_len != 0)) {
         std::cout << "irc decode: null" << std::endl;
         return false;
     }
