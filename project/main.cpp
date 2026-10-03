@@ -180,25 +180,25 @@ unsigned long rx_packets = 0;
 unsigned long rx_bytes = 0;
 
 // создаём объекты для отправки и приёма
-bool make_codecs(i_codec*& enc, i_codec*& dec)
+bool make_codecs(std::unique_ptr<i_codec>& enc, std::unique_ptr<i_codec>& dec)
 {
     enc = 0;
     dec = 0;
     if (args.plugin == "identity") {
-        enc = new identity_codec{};
-        dec = new identity_codec{};
+        enc = std::unique_ptr<i_codec> (new identity_codec{});
+        dec = std::unique_ptr<i_codec> (new identity_codec{});
         return true;
     }
 
     if (args.plugin == "padding") {
-        enc = new padding_codec{};
-        dec = new padding_codec{};
+        enc = std::unique_ptr<i_codec> (new padding_codec{});
+        dec = std::unique_ptr<i_codec> (new padding_codec{});
         return true;
     }
 
     if (args.plugin == "irc") {
-        enc = new irc_codec{};
-        dec = new irc_codec{};
+        enc = std::unique_ptr<i_codec> (new irc_codec{});
+        dec = std::unique_ptr<i_codec> (new irc_codec{});
         return true;
     }
 
@@ -208,7 +208,7 @@ bool make_codecs(i_codec*& enc, i_codec*& dec)
 }
 
 // читает пакеты из TUN, упаковывает, используя кодек и отправляет в сеть (транспорт, сокет)
-void pump_out(tun_device* tun, tcp_link* link, i_codec* enc)
+void pump_out(tun_device* tun, tcp_link* link, std::unique_ptr<i_codec>& enc)
 {
     // IP-пакет, больше MTU с запасом
     uint8_t buf[2048];
@@ -249,7 +249,7 @@ void pump_out(tun_device* tun, tcp_link* link, i_codec* enc)
 }
 
 // Поток B: берём из сокета, распаковываем, в TUN отправляем только payload
-void pump_in(tun_device* tun, tcp_link* link, i_codec* dec)
+void pump_in(tun_device* tun, tcp_link* link, std::unique_ptr<i_codec>& dec)
 {
     uint8_t buf[2048];
     while (running) {
@@ -349,13 +349,13 @@ int main(int argc, char** argv)
 
     print_args();
 
-    i_codec* enc;
-    i_codec* dec;
+    std::unique_ptr<i_codec> enc;
+    std::unique_ptr<i_codec> dec;
 
     if (!make_codecs(enc, dec)) {
-        delete enc;
-        delete dec;
-        return -1;
+        // delete enc;
+        // delete dec;
+        return EXIT_FAILURE;
     }
 
     std::cout << "enc=" << enc->name() << " dec=" << dec->name() << std::endl;
@@ -366,9 +366,7 @@ int main(int argc, char** argv)
 
     tun_device tun;
     if (!tun.open(args.tun, args.addr)) {
-        delete enc;
-        delete dec;
-        return -1;
+        return EXIT_FAILURE;
     }
 
     tcp_link link;
@@ -380,22 +378,18 @@ int main(int argc, char** argv)
         ok = link.connect_to_server(args.host.c_str(), args.port);
     }
     if (!ok) {
-        delete enc;
-        delete dec;
-        return -1;
+        return EXIT_FAILURE;
     }
 
     // поток энкодер
-    std::thread out_thread(pump_out, &tun, &link, enc);
+    std::thread out_thread(pump_out, &tun, &link, std::ref(enc));
     // поток декодер
-    std::thread in_thread(pump_in, &tun, &link, dec);
+    std::thread in_thread(pump_in, &tun, &link, std::ref(dec));
     // отдельный поток печатает счётчики
     std::thread stats_thread(report_stats);
     out_thread.join();
     in_thread.join();
     stats_thread.join();
-    delete enc;
-    delete dec;
 
     return EXIT_SUCCESS;
 }
