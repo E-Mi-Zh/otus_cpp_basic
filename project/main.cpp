@@ -6,6 +6,7 @@
 #include <ctime>                // time
 #include <thread>
 #include <atomic>               // std::atomic
+#include <cxxopts.hpp>          // command line args parsing
 
 #include "tunnel_frame.h"           // pack_frame
 #include "codec.h"                  // i_codec, identity, padding, irc
@@ -20,119 +21,51 @@ struct run_args {
     std::string tun;                    // имя туннельного интерфейса
     std::string addr;                   // адрес на туннельном интерфейсе - CIDR, например 10.0.0.1/24
     std::string plugin;                 // плагин - identity, padding, irc
-    bool got_port;
 };
 
 run_args args;
+cxxopts::Options options("WayStation", "client-server IPv4 tunnel");
+cxxopts::ParseResult result;
 
 // Печатает хелп
 void print_usage()
 {
-    std::cout << "WayStation - client-server IPv4 tunnel" << std::endl;
-    std::cout << "Usage:" << std::endl;
+    std::cout << options.help() << std::endl;
+    std::cout << "Same --plugin on both sides. There is no handshake." << std::endl << std::endl;
+    std::cout << "Examples:" << std::endl;
     std::cout << "  waystation --mode server --port 9000 --tun ws0 --addr 10.0.0.1/24 --plugin padding" << std::endl;
     std::cout << "  waystation --mode client --host 10.200.0.1 --port 9000 --tun ws1 --addr 10.0.0.2/24 --plugin padding" << std::endl;
-    std::cout << "  --mode client|server" << std::endl;
-    std::cout << "  --host <ip>     client only, transport address of the server" << std::endl;
-    std::cout << "  --port <n>" << std::endl;
-    std::cout << "  --tun <name>" << std::endl;
-    std::cout << "  --addr <cidr>" << std::endl;
-    std::cout << "  --plugin identity|padding|irc" << std::endl;
-    std::cout << "Same --plugin on both sides. There is no handshake." << std::endl;
 }
 
-// возвращает значение параметра после имени ключа
-bool take_value(int argc, char** argv, int& i, const char* key, std::string& out)
-{
-    if (i + 1 >= argc) {
-        std::cout << "Wrong usage: " << key << " requires a value" << std::endl;
-        return false;
-    }
-
-    i = i + 1;
-    out = argv[i];
-
-    return true;
-}
-
-// парсим номер порта
-bool parse_port(const std::string& text)
-{
-    if (text.size() == 0) {
-        std::cout << "Wrong usage: --port must be a number from 1 to 65535" << std::endl;
-        return false;
-    }
-
-    // проверяем, что номер порта содержит цифры
-    for (size_t k = 0; k < text.size(); k++) {
-        if ((text[k] < '0') || (text[k] > '9')) {
-            std::cout << "Wrong usage: --port must be a number from 1 to 65535" << std::endl;
-            return false;
-        }
-    }
-
-    int n = std::stoi(text);
-    if ((n < 1) || (n > 65535)) {
-        std::cout << "Wrong usage: --port must be a number from 1 to 65535" << std::endl;
-        return false;
-    }
-    args.port = n;
-    args.got_port = true;
-
-    return true;
-}
-
-// парсим argv
+// парсим аргументы
 int process_args(int argc, char** argv)
 {
-    args.port = 0;
-    args.got_port = false;
+    options.add_options()
+        ("m,mode", "Working mode: client or server", cxxopts::value<std::string>())
+        ("s,host", "IP - client only, transport address of the server", cxxopts::value<std::string>())
+        ("p,port", "port number to connect", cxxopts::value<int>())
+        ("t,tun", "tunnel interface name", cxxopts::value<std::string>())
+        ("a,addr", "CIDR", cxxopts::value<std::string>())
+        ("c,plugin", "Plugin: identity|padding|irc", cxxopts::value<std::string>())
+        ("h,help", "Print usage");
+
+    result = options.parse(argc, argv);
 
     if (argc < 2) {
         print_usage();
         return 0;
     }
 
-    for (int i = 1; i < argc; i++) {
-        std::string a = argv[i];
-        if (a == "--mode") {
-            if (!take_value(argc, argv, i, "--mode", args.mode)) {
-                return -1;
-            }
-        } else if (a == "--host") {
-            if (!take_value(argc, argv, i, "--host", args.host)) {
-                return -1;
-            }
-        } else if (a == "--port") {
-            std::string v;
-            if (!take_value(argc, argv, i, "--port", v)) {
-                return -1;
-            }
-            if (!parse_port(v)) {
-                return -1;
-            }
-        } else if (a == "--tun") {
-            if (!take_value(argc, argv, i, "--tun", args.tun)) {
-                return -1;
-            }
-        } else if (a == "--addr") {
-            if (!take_value(argc, argv, i, "--addr", args.addr)) {
-                return -1;
-            }
-        } else if (a == "--plugin") {
-            if (!take_value(argc, argv, i, "--plugin", args.plugin)) {
-                return -1;
-            }
-        } else {
-            std::cout << "Wrong usage: unknown option " << a << std::endl;
-            return -1;
-        }
+    if (result.count("help")) {
+        print_usage();
+        exit(EXIT_SUCCESS);
     }
 
-    if (args.mode.size() == 0) {
+    if (result.count("mode") == 0) {
         std::cout << "Wrong usage: --mode is required" << std::endl;
         return -1;
     }
+    args.mode = result["mode"].as<std::string>();
 
     if ((args.mode != "client") && (args.mode != "server")) {
         std::cout << "Wrong usage: --mode must be client or server" << std::endl;
@@ -140,25 +73,37 @@ int process_args(int argc, char** argv)
     }
 
     // клиент без адреса сервера
-    if ((args.mode == "client") && (args.host.size() == 0)) { 
-        std::cout << "Wrong usage: --mode client requires --host" << std::endl;
-        return -1;
+    if ((args.mode == "client") && (args.host.size() == 0)) {
+        if (result.count("host") == 0) {
+            std::cout << "Wrong usage: --mode client requires --host" << std::endl;
+            return -1;
+        }
+        args.host = result["host"].as<std::string>();
     }
 
-    if (!args.got_port) {
+    if (result.count("port") == 0) {
         std::cout << "Wrong usage: --port is required" << std::endl;
         return -1;
     }
+    args.port = result["port"].as<int>();
 
-    if (args.tun.size() == 0) {
+    if (result.count("tun") == 0) {
         std::cout << "Wrong usage: --tun is required" << std::endl;
         return -1;
     }
+    args.tun = result["tun"].as<std::string>();
 
-    if (args.addr.size() == 0) { // CIDR
+    if (result.count("addr") == 0) {
         std::cout << "Wrong usage: --addr is required" << std::endl;
         return -1;
     }
+    args.addr = result["addr"].as<std::string>();
+
+    if (result.count("plugin") == 0) {
+        std::cout << "Wrong usage: --plugin is required" << std::endl;
+        return -1;
+    }
+    args.plugin = result["plugin"].as<std::string>();
 
     if ((args.plugin != "identity") && (args.plugin != "padding") && (args.plugin != "irc")) {
         std::cout << "Wrong usage: --plugin must be identity, padding or irc" << std::endl;

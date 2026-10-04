@@ -2,6 +2,12 @@ cmake_minimum_required(VERSION 3.5)
 
 project(waystation)
 
+find_package(cxxopts REQUIRED)
+
+include_directories(
+    ${cxxopts_INCLUDE_DIRS}
+)
+
 add_executable(waystation main.cpp tcp_link.cpp tunnel_frame.cpp identity_codec.cpp padding_codec.cpp tun_device.cpp base64.cpp irc_codec.cpp)
 set_target_properties(waystation PROPERTIES CXX_STANDARD 17 CXX_STANDARD_REQUIRED ON)
 target_compile_options(waystation PUBLIC -Wall -Wextra -Wpedantic)
