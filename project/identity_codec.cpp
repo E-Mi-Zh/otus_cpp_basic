@@ -14,10 +14,7 @@ bool identity_codec::encode(const uint8_t* frame, size_t frame_len, std::vector<
         std::cout << "identity encode: null frame" << std::endl;
         return false;
     }
-    out.clear();
-    for (size_t i = 0; i < frame_len; i++) {
-        out.push_back(frame[i]);
-    }
+    out.assign(frame, frame + frame_len);
 
     return true;
 }

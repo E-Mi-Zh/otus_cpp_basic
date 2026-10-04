@@ -39,20 +39,20 @@ bool padding_codec::encode(const uint8_t* frame, size_t frame_len, std::vector<u
         out.push_back((uint8_t)(std::rand() & 0xFF));
     }
 
-    for (size_t i = 0; i < frame_len; i++) {
-        out.push_back(frame[i]);
-    }
+    out.insert(out.end(), frame, frame + frame_len);
+
     return true;
 }
 
-// Снимаем лишнее (паддинг) частми передаём целые кадры в парсер
+// Снимаем лишнее (паддинг) частями передаём целые кадры в парсер
 // recv может возвращать буферы байтов с произвольными границами
 bool padding_codec::decode(const uint8_t* data, size_t data_len)
 {
     if (data_len > 0) {
-        for (size_t i = 0; i < data_len; i++) {
-            stash.push_back(data[i]);
-        }
+        stash.insert(stash.end(), data, data + data_len);
+        // for (size_t i = 0; i < data_len; i++) {
+        //     stash.push_back(data[i]);
+        // }
     }
     // кручу автомат, пока хватает байт на текущий шаг
     while (true) {

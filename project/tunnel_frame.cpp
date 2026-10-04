@@ -17,13 +17,9 @@ bool pack_frame(const uint8_t* payload, size_t len, std::vector<uint8_t>& out)
     uint32_t l = htonl(len);                // host → network byte order
     uint8_t buf[4];
     std::memcpy(&buf[0], &l, 4);
-    for (size_t i = 0; i < 4; i++) {
-        out.push_back(buf[i]);
-    }
+    out.insert(out.end(), buf, buf + 4);
 
-    for (size_t i = 0; i < len; i++) {
-        out.push_back(payload[i]);
-    }
+    out.insert(out.end(), payload, payload + len);
 
     return true;
 }
@@ -61,9 +57,7 @@ bool frame_parser::consume(const uint8_t* data, size_t len)
         return true;
     }
 
-    for (size_t i = 0; i < len; i++) {
-        this->tail.push_back(data[i]);
-    }
+    this->tail.insert(this->tail.end(), data, data + len);
 
     return this->pull_ready();          // пробуем вернуть кадр
 }
@@ -97,9 +91,7 @@ bool frame_parser::pull_ready()
         }
 
         std::vector<uint8_t> frame;
-        for (size_t i = 0; i < need; i++) {
-            frame.push_back(this->tail[i]);
-        }
+        frame.insert(frame.end(), this->tail.begin(), this->tail.begin() + need);
         this->ready.push_back(frame);
         this->tail.erase(this->tail.begin(), this->tail.begin() + need);
     }
