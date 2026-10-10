@@ -10,4 +10,5 @@
 * [hw\_14](https://github.com/E-Mi-Zh/otus_cpp_basic/tree/master/hw14) - «Расчёт статистик, полиморфизм»
 * [hw\_17](https://github.com/E-Mi-Zh/otus_cpp_basic/tree/master/hw17) - «Тестирование контейнеров»
 * [hw\_30](https://github.com/E-Mi-Zh/otus_cpp_basic/tree/master/hw30) - «Многопоточный "взлом"»
+* [hw\_35](https://github.com/E-Mi-Zh/otus_cpp_basic/tree/master/hw35) - «Распараллеливание программы»
 * [project](https://github.com/E-Mi-Zh/otus_cpp_basic/tree/master/project) - итоговый проект
