@@ -50,9 +50,6 @@ bool padding_codec::decode(const uint8_t* data, size_t data_len)
 {
     if (data_len > 0) {
         stash.insert(stash.end(), data, data + data_len);
-        // for (size_t i = 0; i < data_len; i++) {
-        //     stash.push_back(data[i]);
-        // }
     }
     // кручу автомат, пока хватает байт на текущий шаг
     while (true) {
