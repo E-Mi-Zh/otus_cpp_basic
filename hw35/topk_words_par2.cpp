@@ -11,16 +11,11 @@
 #include <map>
 #include <vector>
 #include <chrono>
-#include <mutex>                // mutex & lock_guard
 #include <thread>               // threads
 
 const size_t TOPK = 10;
 
 using Counter = std::map<std::string, std::size_t>;
-
-Counter freq_dict;
-
-static std::mutex dict_mutex;
 
 std::string tolower(const std::string &str);
 
@@ -28,7 +23,7 @@ void count_words(std::istream& stream, Counter&);
 
 void print_topk(std::ostream& stream, const Counter&, const size_t k);
 
-void count_files(unsigned int thread_id, unsigned int n_threads, unsigned int n_files, char** argv);
+void count_files(unsigned int thread_id, unsigned int n_threads, unsigned int n_files, char** argv, Counter* result);
 
 int main(int argc, char *argv[]) {
     if (argc < 2) {
@@ -63,12 +58,23 @@ int main(int argc, char *argv[]) {
     }
 
     std::vector<std::thread> threads(n_threads);
+    // массив словарей
+    std::vector<Counter> dicts(n_threads);
+
     for (unsigned int i = 0; i < n_threads; i++) {
-        threads[i] = std::thread(count_files, i, n_threads, n_files, argv);
+        threads[i] = std::thread(count_files, i, n_threads, n_files, argv, &dicts[i]);
     }
 
     for (unsigned int i = 0; i < n_threads; i++) {
         threads[i].join();
+    }
+
+    // собираю словари в один
+    Counter freq_dict;
+    for (unsigned int i = 0; i < n_threads; i++) {
+        for (auto it = dicts[i].begin(); it != dicts[i].end(); ++it) {
+            freq_dict[it->first] = freq_dict[it->first] + it->second;
+        }
     }
 
     print_topk(std::cout, freq_dict, TOPK);
@@ -88,10 +94,7 @@ std::string tolower(const std::string &str) {
 void count_words(std::istream& stream, Counter& counter) {
     std::for_each(std::istream_iterator<std::string>(stream),
                   std::istream_iterator<std::string>(),
-                  [&counter](const std::string &s) {
-                    std::lock_guard<std::mutex> lock(dict_mutex);
-                    ++counter[tolower(s)];
-                });
+                  [&counter](const std::string &s) { ++counter[tolower(s)]; });    
 }
 
 void print_topk(std::ostream& stream, const Counter& counter, const size_t k) {
@@ -114,9 +117,9 @@ void print_topk(std::ostream& stream, const Counter& counter, const size_t k) {
 }
 
 void count_files(unsigned int thread_id, unsigned int n_threads,
-                 unsigned int n_files, char** argv) {
+                 unsigned int n_files, char** argv, Counter* result) {
     for (unsigned int i = 1 + thread_id; i <= n_files; i = i + n_threads) {
         std::ifstream input{argv[i]};
-        count_words(input, freq_dict);
+        count_words(input, *result);
     }
 }
