@@ -12,6 +12,7 @@
 #include <vector>
 #include <chrono>
 #include <thread>               // threads
+#include <filesystem>           // std::filesystem::exists и std::filesystem::is_regular_file
 
 const size_t TOPK = 10;
 
