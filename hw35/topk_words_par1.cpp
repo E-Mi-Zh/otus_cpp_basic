@@ -13,11 +13,18 @@
 #include <chrono>
 #include <mutex>                // mutex & lock_guard
 #include <thread>               // threads
-#include <filesystem>           // std::filesystem::exists и std::filesystem::is_regular_file
+#include <atomic>
 
 const size_t TOPK = 10;
 
 using Counter = std::map<std::string, std::size_t>;
+
+struct thread_state_s {
+    Counter freq_dict;
+    std::mutex dict_mutex;
+    std::atomic<bool> failed{false};
+    std::mutex cerr_mutex;
+};
 
 std::string tolower(const std::string &str);
 
@@ -25,7 +32,7 @@ void count_words(std::istream& stream, Counter& counter, std::mutex& dict_mutex)
 
 void print_topk(std::ostream& stream, const Counter&, const size_t k);
 
-void count_files(unsigned int thread_id, unsigned int n_threads, unsigned int n_files, char** argv, Counter&, std::mutex& dict_mutex);
+void count_files(unsigned int thread_id, unsigned int n_threads, unsigned int n_files, char** argv, thread_state_s& thread_state);
 
 int main(int argc, char *argv[]) {
     if (argc < 2) {
@@ -51,29 +58,22 @@ int main(int argc, char *argv[]) {
 
     auto start = std::chrono::high_resolution_clock::now();
 
-    for (int i = 1; i < argc; ++i) {
-        if (!std::filesystem::exists(argv[i])) {
-            std::cerr << "File " << argv[i] << " isn't exist! Exiting..." << std::endl;
-            return EXIT_FAILURE;
-        }
-        if (!std::filesystem::is_regular_file(argv[i])) {
-            std::cerr << "File " << argv[i] << " isn't regular! Exiting..." << std::endl;
-            return EXIT_FAILURE;
-        }
-    }
+    struct thread_state_s thread_state;
 
-    Counter freq_dict;
-    static std::mutex dict_mutex;
     std::vector<std::thread> threads(n_threads);
     for (unsigned int i = 0; i < n_threads; i++) {
-        threads[i] = std::thread(count_files, i, n_threads, n_files, argv, std::ref(freq_dict), std::ref(dict_mutex));
+        threads[i] = std::thread(count_files, i, n_threads, n_files, argv, std::ref(thread_state));
     }
 
     for (unsigned int i = 0; i < n_threads; i++) {
         threads[i].join();
     }
 
-    print_topk(std::cout, freq_dict, TOPK);
+    if (thread_state.failed) {
+        return EXIT_FAILURE;
+    }
+
+    print_topk(std::cout, thread_state.freq_dict, TOPK);
     auto end = std::chrono::high_resolution_clock::now();
     auto elapsed_ms = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
     std::cout << "Elapsed time is " << elapsed_ms.count() << " us\n";
@@ -116,9 +116,22 @@ void print_topk(std::ostream& stream, const Counter& counter, const size_t k) {
 }
 
 void count_files(unsigned int thread_id, unsigned int n_threads,
-                 unsigned int n_files, char** argv, Counter& freq_dict, std::mutex& dict_mutex) {
+                 unsigned int n_files, char** argv, thread_state_s& thread_state) {
     for (unsigned int i = 1 + thread_id; i <= n_files; i = i + n_threads) {
+        if (thread_state.failed == true) {
+            return;
+        }
         std::ifstream input{argv[i]};
-        count_words(input, freq_dict, dict_mutex);
+        if (!input.is_open()) {
+            thread_state.failed = true;
+            {
+                std::lock_guard<std::mutex> lock(thread_state.cerr_mutex);
+                std::cerr << "[thread " << thread_id << "] Failed to open file "
+          << argv[i] << " (argv[" << i << "])\n";
+                // std::cerr << "Failed to open file " << argv[i] << '\n';
+            }
+            return;
+        }
+        count_words(input, thread_state.freq_dict, thread_state.dict_mutex);
     }
 }
