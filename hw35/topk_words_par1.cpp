@@ -18,17 +18,13 @@ const size_t TOPK = 10;
 
 using Counter = std::map<std::string, std::size_t>;
 
-Counter freq_dict;
-
-static std::mutex dict_mutex;
-
 std::string tolower(const std::string &str);
 
-void count_words(std::istream& stream, Counter&);
+void count_words(std::istream& stream, Counter& counter, std::mutex& dict_mutex);
 
 void print_topk(std::ostream& stream, const Counter&, const size_t k);
 
-void count_files(unsigned int thread_id, unsigned int n_threads, unsigned int n_files, char** argv);
+void count_files(unsigned int thread_id, unsigned int n_threads, unsigned int n_files, char** argv, Counter&, std::mutex& dict_mutex);
 
 int main(int argc, char *argv[]) {
     if (argc < 2) {
@@ -62,9 +58,11 @@ int main(int argc, char *argv[]) {
         }
     }
 
+    Counter freq_dict;
+    static std::mutex dict_mutex;
     std::vector<std::thread> threads(n_threads);
     for (unsigned int i = 0; i < n_threads; i++) {
-        threads[i] = std::thread(count_files, i, n_threads, n_files, argv);
+        threads[i] = std::thread(count_files, i, n_threads, n_files, argv, std::ref(freq_dict), std::ref(dict_mutex));
     }
 
     for (unsigned int i = 0; i < n_threads; i++) {
@@ -85,10 +83,10 @@ std::string tolower(const std::string &str) {
     return lower_str;
 };
 
-void count_words(std::istream& stream, Counter& counter) {
+void count_words(std::istream& stream, Counter& counter, std::mutex& dict_mutex) {
     std::for_each(std::istream_iterator<std::string>(stream),
                   std::istream_iterator<std::string>(),
-                  [&counter](const std::string &s) {
+                  [&counter, &dict_mutex](const std::string &s) {
                     std::lock_guard<std::mutex> lock(dict_mutex);
                     ++counter[tolower(s)];
                 });
@@ -114,9 +112,9 @@ void print_topk(std::ostream& stream, const Counter& counter, const size_t k) {
 }
 
 void count_files(unsigned int thread_id, unsigned int n_threads,
-                 unsigned int n_files, char** argv) {
+                 unsigned int n_files, char** argv, Counter& freq_dict, std::mutex& dict_mutex) {
     for (unsigned int i = 1 + thread_id; i <= n_files; i = i + n_threads) {
         std::ifstream input{argv[i]};
-        count_words(input, freq_dict);
+        count_words(input, freq_dict, dict_mutex);
     }
 }
