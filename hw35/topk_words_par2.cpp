@@ -50,9 +50,12 @@ int main(int argc, char *argv[]) {
     auto start = std::chrono::high_resolution_clock::now();
 
     for (int i = 1; i < argc; ++i) {
-        std::ifstream input{argv[i]};
-        if (!input.is_open()) {
-            std::cerr << "Failed to open file " << argv[i] << '\n';
+        if (!std::filesystem::exists(argv[i])) {
+            std::cerr << "File " << argv[i] << " isn't exist! Exiting..." << std::endl;
+            return EXIT_FAILURE;
+        }
+        if (!std::filesystem::is_regular_file(argv[i])) {
+            std::cerr << "File " << argv[i] << " isn't regular! Exiting..." << std::endl;
             return EXIT_FAILURE;
         }
     }
